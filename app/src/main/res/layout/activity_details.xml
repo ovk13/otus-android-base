@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/standardPadding"
+    tools:context=".DetailsActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/filmCover"
+                android:layout_width="200dp"
+                android:layout_height="300dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/film1" />
+
+            <TextView
+                android:id="@+id/filmName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/filmCover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/filmCover"
+                tools:text="@string/film1Name" />
+
+            <TextView
+                android:id="@+id/filmDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@id/filmName"
+                app:layout_constraintTop_toBottomOf="@id/filmName"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="@string/film1Description" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/filmInfoBr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="filmCover,filmDescription" />
+
+            <TextView
+                android:id="@+id/likeLb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:labelFor="@id/likeCb"
+                android:text="@string/likeLabel"
+                app:layout_constraintLeft_toLeftOf="@id/filmCover"
+                app:layout_constraintRight_toLeftOf="@id/likeCb"
+                app:layout_constraintTop_toBottomOf="@id/filmInfoBr" />
+
+            <CheckBox
+                android:id="@+id/likeCb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBaseline_toBaselineOf="@id/likeLb"
+                app:layout_constraintLeft_toRightOf="@id/likeLb" />
+
+            <EditText
+                android:id="@+id/comment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="top"
+                android:hint="@string/commentPlaceholder"
+                android:lines="10"
+                app:layout_constraintLeft_toLeftOf="@id/likeLb"
+                app:layout_constraintTop_toBottomOf="@id/likeLb"
+                tools:text="Джон Уик — на первый взгляд, самый обычный среднестатистический американец, который ведет спокойную мирную жизнь."
+                android:inputType="none"
+                android:importantForAutofill="no" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
