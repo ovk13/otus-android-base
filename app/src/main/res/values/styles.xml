@@ -1,11 +1,53 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorButtonNormal">@color/buttonBg</item>
+    </style>
+
+    <style name="Film" />
+
+    <style name="Film.Image">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="layout_constraintHorizontal_weight">2</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+    </style>
+
+    <style name="Button" parent="android:Widget.Material.Light.Button">
+        <item name="android:textColor">@color/buttonTextColor</item>
+    </style>
+
+    <style name="RoundIconButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/btn_round</item>
+        <item name="android:tint">@color/buttonTextColor</item>
+        <item name="android:padding">@dimen/standardPadding</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="Film.Title" parent="android:TextAppearance.Material">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+    </style>
+
+    <style name="Film.Title.Detail">
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="Film.Description">
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
     </style>
 
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="details">Детали</string>
+    <string name="inviteBtnText">Пригласить друга</string>
+    <string name="inviteTitle">Приглашение</string>
+    <string name="inviteText">Текст приглашения</string>
+    <string name="inviteChooserTitle">Пригласить друга</string>
+    <string name="likeLabel">Нравится</string>
+    <string name="commentPlaceholder">Комментарий</string>
+    <string name="exitDialogTitle">Пожалуйста, подтвердите действие</string>
+    <string name="exitDialogMessage">Вы действительно хотите выйти?</string>
+    <string name="exitDialogNo">Нет</string>
+    <string name="exitDialogYes">Да</string>
+    <string name="dayNightSwitcherLabel">Дневной/ночной режим</string>
+</resources>
