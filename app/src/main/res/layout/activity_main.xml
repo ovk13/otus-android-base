@@ -6,116 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ScrollView
-        android:id="@+id/filmsList"
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filmsRecycler"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/standardPadding"
-        android:paddingTop="@dimen/standardPadding"
-        android:paddingEnd="@dimen/standardPadding"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@id/dayNightSwitcher"
-        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/film_item"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dayNightSwitcher"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/film1"
-                    style="@style/Film.Image"
-                    android:src="@drawable/film1"
-                    app:layout_constraintEnd_toStartOf="@id/film1Name"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/film1Name"
-                    style="@style/Film.Title"
-                    android:text="@string/film1Name"
-                    app:layout_constraintHorizontal_weight="3"
-                    app:layout_constraintStart_toEndOf="@id/film1"
-                    app:layout_constraintTop_toTopOf="@id/film1" />
-
-                <Button
-                    android:id="@+id/film1DetailsBtn"
-                    style="@style/Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/details"
-                    app:layout_constraintStart_toStartOf="@id/film1Name"
-                    app:layout_constraintTop_toBottomOf="@id/film1Name" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/film2"
-                    style="@style/Film.Image"
-                    android:src="@drawable/film2"
-                    app:layout_constraintEnd_toStartOf="@id/film2Name"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/film2Name"
-                    style="@style/Film.Title"
-                    android:text="@string/film2Name"
-                    app:layout_constraintHorizontal_weight="3"
-                    app:layout_constraintStart_toEndOf="@id/film2"
-                    app:layout_constraintTop_toTopOf="@id/film2" />
-
-                <Button
-                    android:id="@+id/film2DetailsBtn"
-                    style="@style/Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/details"
-                    app:layout_constraintStart_toStartOf="@id/film2Name"
-                    app:layout_constraintTop_toBottomOf="@id/film2Name" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/film3"
-                    style="@style/Film.Image"
-                    android:src="@drawable/film3"
-                    app:layout_constraintEnd_toStartOf="@id/film3Name"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/film3Name"
-                    style="@style/Film.Title"
-                    android:text="@string/film3Name"
-                    app:layout_constraintHorizontal_weight="3"
-                    app:layout_constraintStart_toEndOf="@id/film3"
-                    app:layout_constraintTop_toTopOf="@id/film3" />
-
-                <Button
-                    android:id="@+id/film3DetailsBtn"
-                    style="@style/Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/details"
-                    app:layout_constraintStart_toStartOf="@id/film3Name"
-                    app:layout_constraintTop_toBottomOf="@id/film3Name" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-    </ScrollView>
 
     <ImageButton
         android:id="@+id/inviteBtn"
@@ -141,6 +41,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filmsList" />
+        app:layout_constraintTop_toBottomOf="@id/filmsRecycler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

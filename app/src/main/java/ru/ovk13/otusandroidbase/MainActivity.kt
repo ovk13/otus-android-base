@@ -5,74 +5,88 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var filmsViews: Map<Int, Map<String, View>>
     private lateinit var filmsData: Map<Int, FilmData>
     private var visitedFilms: MutableSet<Int> = mutableSetOf()
+    private lateinit var filmsList: List<FilmItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        filmsList = arrayListOf<FilmItem>(
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film1), resources.getString(R.string.film1Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film2), resources.getString(R.string.film2Name)),
+            FilmItem(ContextCompat.getDrawable(this, R.drawable.film3), resources.getString(R.string.film3Name))
+        )
+
+        initFilmsRecycler()
+
         savedInstanceState?.apply {
             visitedFilms = this.getIntArray(VISITED_FILMS)?.toMutableSet() ?: mutableSetOf()
         }
 
-        filmsViews = mapOf(
-            1 to mapOf(
-                NAME_VIEW to findViewById<TextView>(R.id.film1Name) as View,
-                BUTTON to findViewById<Button>(R.id.film1DetailsBtn) as View
-            ),
-            2 to mapOf(
-                NAME_VIEW to findViewById<TextView>(R.id.film2Name) as View,
-                BUTTON to findViewById<Button>(R.id.film2DetailsBtn) as View
-            ),
-            3 to mapOf(
-                NAME_VIEW to findViewById<TextView>(R.id.film3Name) as View,
-                BUTTON to findViewById<Button>(R.id.film3DetailsBtn) as View
-            )
-        )
+//        filmsViews = mapOf(
+//            1 to mapOf(
+//                NAME_VIEW to findViewById<TextView>(R.id.film1Name) as View,
+//                BUTTON to findViewById<Button>(R.id.film1DetailsBtn) as View
+//            ),
+//            2 to mapOf(
+//                NAME_VIEW to findViewById<TextView>(R.id.film2Name) as View,
+//                BUTTON to findViewById<Button>(R.id.film2DetailsBtn) as View
+//            ),
+//            3 to mapOf(
+//                NAME_VIEW to findViewById<TextView>(R.id.film3Name) as View,
+//                BUTTON to findViewById<Button>(R.id.film3DetailsBtn) as View
+//            )
+//        )
+//
+//        filmsData = mapOf(
+//                1 to FilmData(R.string.film1Name, R.drawable.film1, R.string.film1Description),
+//        2 to FilmData(R.string.film2Name, R.drawable.film2, R.string.film2Description),
+//        3 to FilmData(R.string.film3Name, R.drawable.film3, R.string.film3Description)
+//        )
+//
+//        for ((id, film) in filmsViews) {
+//
+//            if (visitedFilms.contains(id)) {
+//                markVisited(id)
+//            }
+//
+//            film[BUTTON]?.setOnClickListener(object : )
+//        }
 
-        filmsData = mapOf(
-            1 to FilmData(R.string.film1Name, R.drawable.film1, R.string.film1Description),
-            2 to FilmData(R.string.film2Name, R.drawable.film2, R.string.film2Description),
-            3 to FilmData(R.string.film3Name, R.drawable.film3, R.string.film3Description)
-        )
-
-        for ((id, film) in filmsViews) {
-
-            if (visitedFilms.contains(id)) {
-                markVisited(id)
-            }
-
-            film[BUTTON]?.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(p0: View?) {
-                    markVisited(id)
-                    val intent = Intent(this@MainActivity, DetailsActivity::class.java)
-                    intent.putExtra(FILM_DATA, filmsData[id])
-                    intent.resolveActivity(packageManager)?.let {
-                        startActivityForResult(intent, DETAIL_REQUEST_CODE)
-                    }
-                }
-
-            })
-        }
-
-        findViewById<ImageButton>(R.id.inviteBtn)?.setOnClickListener(object :
-            View.OnClickListener {
-            override fun onClick(p0: View?) {
-                inviteFriend()
-            }
-
-        })
+        findViewById<ImageButton>(R.id.inviteBtn)?.setOnClickListener { inviteFriend() }
 
         findViewById<Switch>(R.id.dayNightSwitcher)?.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener{
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -82,6 +96,19 @@ class MainActivity : AppCompatActivity() {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
+        })
+    }
+
+    private fun initFilmsRecycler() {
+        val recyclerView = findViewById<RecyclerView>(R.id.filmsRecycler)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = FilmViewAdapter(LayoutInflater.from(this), filmsList, object: FilmViewAdapter.FilmClickListener{
+            override fun onFilmClick(position: Int) {
+                Log.d("FilmPosition", position.toString())
+            }
+
         })
     }
 

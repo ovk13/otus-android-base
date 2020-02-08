@@ -5,4 +5,4 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class FilmData(val nameResId: Int, val coverResId: Int, val descriptionResId: Int) : Parcelable
+data class FilmData(val nameResId: Int, val coverResId: Int, val descriptionResId: Int) : Parcelable
