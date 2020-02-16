@@ -12,4 +12,6 @@
     <string name="exitDialogNo">Нет</string>
     <string name="exitDialogYes">Да</string>
     <string name="dayNightSwitcherLabel">Дневной/ночной режим</string>
+    <string name="favourites">Избранное</string>
+    <string name="addBtnDescription">Добавить фильм</string>
 </resources>

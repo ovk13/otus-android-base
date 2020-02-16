@@ -9,6 +9,15 @@
         <item name="android:colorButtonNormal">@color/buttonBg</item>
     </style>
 
+    <style name="Header">
+        <item name="android:background">@color/headerBg</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:paddingStart">@dimen/standardPadding</item>
+        <item name="android:paddingEnd">@dimen/standardPadding</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="Film" />
 
     <style name="Film.Image">
