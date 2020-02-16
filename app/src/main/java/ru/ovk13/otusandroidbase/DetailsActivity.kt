@@ -18,8 +18,8 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        val filmData: FilmData = getIntent().getParcelableExtra<FilmData>(FILM_DATA)
-        findViewById<TextView>(R.id.filmName).setText(filmData.nameResId)
+        val filmData: FilmItem = intent.getParcelableExtra<FilmItem>(FILM_DATA)
+        findViewById<TextView>(R.id.filmName).setText(filmData.titleResId)
         findViewById<TextView>(R.id.filmDescription).setText(filmData.descriptionResId)
         findViewById<ImageView>(R.id.filmCover).setImageResource(filmData.coverResId)
 
