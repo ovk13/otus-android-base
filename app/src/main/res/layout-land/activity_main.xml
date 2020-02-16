@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:id="@+id/filmsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/standardPadding"
+        android:paddingTop="@dimen/standardPadding"
+        android:paddingEnd="@dimen/standardPadding"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/dayNightSwitcher"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp"
+                android:weightSum="2">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/film1"
+                        style="@style/Film.Image"
+                        android:src="@drawable/film1"
+                        app:layout_constraintEnd_toStartOf="@id/film1Name"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/film1Name"
+                        style="@style/Film.Title"
+                        android:text="@string/film1Name"
+                        app:layout_constraintHorizontal_weight="3"
+                        app:layout_constraintStart_toEndOf="@id/film1"
+                        app:layout_constraintTop_toTopOf="@id/film1" />
+
+                    <Button
+                        android:id="@+id/film1DetailsBtn"
+                        style="@style/Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/details"
+                        app:layout_constraintStart_toStartOf="@id/film1Name"
+                        app:layout_constraintTop_toBottomOf="@id/film1Name" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/film2"
+                        style="@style/Film.Image"
+                        android:src="@drawable/film2"
+                        app:layout_constraintEnd_toStartOf="@id/film2Name"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/film2Name"
+                        style="@style/Film.Title"
+                        android:text="@string/film2Name"
+                        app:layout_constraintHorizontal_weight="3"
+                        app:layout_constraintStart_toEndOf="@id/film2"
+                        app:layout_constraintTop_toTopOf="@id/film2" />
+
+                    <Button
+                        android:id="@+id/film2DetailsBtn"
+                        style="@style/Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/details"
+                        app:layout_constraintStart_toStartOf="@id/film2Name"
+                        app:layout_constraintTop_toBottomOf="@id/film2Name" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/filmsLinePadding"
+                android:weightSum="2">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/film3"
+                        style="@style/Film.Image"
+                        android:src="@drawable/film3"
+                        app:layout_constraintEnd_toStartOf="@id/film3Name"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/film3Name"
+                        style="@style/Film.Title"
+                        android:text="@string/film3Name"
+                        app:layout_constraintHorizontal_weight="3"
+                        app:layout_constraintStart_toEndOf="@id/film3"
+                        app:layout_constraintTop_toTopOf="@id/film3" />
+
+                    <Button
+                        android:id="@+id/film3DetailsBtn"
+                        style="@style/Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/details"
+                        app:layout_constraintStart_toStartOf="@id/film3Name"
+                        app:layout_constraintTop_toBottomOf="@id/film3Name" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/inviteBtn"
+        style="@style/RoundIconButton"
+        android:layout_width="@dimen/inviteButtonDiameter"
+        android:layout_height="@dimen/inviteButtonDiameter"
+        android:layout_marginEnd="@dimen/inviteButtonMargin"
+        android:layout_marginBottom="@dimen/inviteButtonMargin"
+        android:contentDescription="@string/inviteBtnText"
+        android:src="@drawable/ic_person_add_black_24dp"
+        app:layout_constraintBottom_toTopOf="@id/dayNightSwitcher"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Switch
+        android:id="@+id/dayNightSwitcher"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@color/buttonBg"
+        android:paddingStart="@dimen/dayNightSwitcherPadding"
+        android:paddingEnd="20dp"
+        android:text="@string/dayNightSwitcherLabel"
+        android:textColor="@color/buttonTextColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filmsList" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

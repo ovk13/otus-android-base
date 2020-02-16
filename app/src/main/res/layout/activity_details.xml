@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/standardPadding"
-    tools:context=".DetailsActivity"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:padding="@dimen/standardPadding"
+    tools:context=".DetailsActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,34 +19,28 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/filmCover"
-                android:layout_width="200dp"
-                android:layout_height="300dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toStartOf="@id/filmName"
+                app:layout_constraintHorizontal_weight="2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/film1" />
 
             <TextView
                 android:id="@+id/filmName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                style="@style/Film.Title.Detail"
+                app:layout_constraintHorizontal_weight="3"
                 app:layout_constraintStart_toEndOf="@id/filmCover"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/filmCover"
                 tools:text="@string/film1Name" />
 
             <TextView
                 android:id="@+id/filmDescription"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="14sp"
+                style="@style/Film.Description"
                 app:layout_constraintStart_toStartOf="@id/filmName"
                 app:layout_constraintTop_toBottomOf="@id/filmName"
-                app:layout_constraintEnd_toEndOf="parent"
                 tools:text="@string/film1Description" />
 
             <androidx.constraintlayout.widget.Barrier
@@ -80,12 +74,12 @@
                 android:layout_height="0dp"
                 android:gravity="top"
                 android:hint="@string/commentPlaceholder"
+                android:importantForAutofill="no"
+                android:inputType="none"
                 android:lines="10"
                 app:layout_constraintLeft_toLeftOf="@id/likeLb"
                 app:layout_constraintTop_toBottomOf="@id/likeLb"
-                tools:text="Джон Уик — на первый взгляд, самый обычный среднестатистический американец, который ведет спокойную мирную жизнь."
-                android:inputType="none"
-                android:importantForAutofill="no" />
+                tools:text="Джон Уик — на первый взгляд, самый обычный среднестатистический американец, который ведет спокойную мирную жизнь." />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

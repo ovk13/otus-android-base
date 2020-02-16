@@ -1,20 +1,22 @@
 package ru.ovk13.otusandroidbase
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 
-class MainActivity : AppCompatActivity()  {
+class MainActivity : AppCompatActivity() {
 
-    private lateinit var filmsViews : Map<Int, Map<String, View>>
-    private lateinit var filmsData : Map<Int, FilmData>
-    private var visitedFilms : MutableSet<Int> = mutableSetOf()
+    private lateinit var filmsViews: Map<Int, Map<String, View>>
+    private lateinit var filmsData: Map<Int, FilmData>
+    private var visitedFilms: MutableSet<Int> = mutableSetOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity()  {
                 markVisited(id)
             }
 
-            film[BUTTON]?.setOnClickListener(object: View.OnClickListener{
+            film[BUTTON]?.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     markVisited(id)
                     val intent = Intent(this@MainActivity, DetailsActivity::class.java)
@@ -64,27 +66,45 @@ class MainActivity : AppCompatActivity()  {
             })
         }
 
-        findViewById<Button>(R.id.inviteBtn)?.setOnClickListener(object: View.OnClickListener{
+        findViewById<ImageButton>(R.id.inviteBtn)?.setOnClickListener(object :
+            View.OnClickListener {
             override fun onClick(p0: View?) {
                 inviteFriend()
             }
 
         })
+
+        findViewById<Switch>(R.id.dayNightSwitcher)?.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener{
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+        })
     }
 
     private fun inviteFriend() {
         val inviteIntent = Intent(Intent.ACTION_SEND)
-        inviteIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.inviteTitle));
+        inviteIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.inviteTitle))
         inviteIntent.putExtra(Intent.EXTRA_STREAM, getString(R.string.inviteText))
         inviteIntent.type = "text/plain"
-        val inviteChooser = Intent.createChooser(inviteIntent, getString(R.string.inviteChooserTitle))
+        val inviteChooser =
+            Intent.createChooser(inviteIntent, getString(R.string.inviteChooserTitle))
         inviteIntent.resolveActivity(packageManager)?.let {
             startActivity(inviteChooser)
         }
     }
 
     private fun markVisited(id: Int) {
-        (filmsViews[id]?.get(NAME_VIEW) as TextView).setTextColor(ContextCompat.getColor(this, R.color.visited))
+        Log.d("visitedCOlor", R.color.visited.toString())
+        (filmsViews[id]?.get(NAME_VIEW) as TextView).setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.visited
+            )
+        )
 
         if (!visitedFilms.contains(id)) {
             visitedFilms.add(id)
@@ -113,6 +133,21 @@ class MainActivity : AppCompatActivity()  {
             Log.i(LIKE_TAG, like.toString())
             Log.i(LIKE_TAG, comment ?: "")
         }
+    }
+
+    override fun onBackPressed() {
+
+        val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
+        val okListener = DialogInterface.OnClickListener { _, _ -> super.onBackPressed() }
+        val cancelListener = DialogInterface.OnClickListener { dialog, _ -> dialog.dismiss() }
+
+        dialogBuilder.setMessage(R.string.exitDialogMessage)
+            .setTitle(R.string.exitDialogTitle)
+            .setNegativeButton(R.string.exitDialogNo, cancelListener)
+            .setPositiveButton(R.string.exitDialogYes, okListener)
+
+        val dialog: AlertDialog = dialogBuilder.create()
+        dialog.show()
     }
 
     companion object {
