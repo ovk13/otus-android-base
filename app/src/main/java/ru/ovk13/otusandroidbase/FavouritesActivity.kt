@@ -117,9 +117,7 @@ class FavouritesActivity : AppCompatActivity() {
 
                     val intent = Intent(this@FavouritesActivity, DetailsActivity::class.java)
                     intent.putExtra(MainActivity.FILM_DATA, favouriteFilmsList[dataPosition])
-                    intent.resolveActivity(packageManager)?.let {
-                        startActivity(intent)
-                    }
+                    startActivity(intent)
                 }
 
                 override fun onDeleteClick(position: Int, dataPosition: Int) {

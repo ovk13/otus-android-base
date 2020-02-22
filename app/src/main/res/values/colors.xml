@@ -5,6 +5,7 @@
     <color name="colorAccent">#3C3E3F</color>
     <color name="black">#000</color>
     <color name="white">#fff</color>
+    <color name="title">#000</color>
     <color name="visited">#666</color>
     <color name="buttonBg">#666</color>
     <color name="buttonTextColor">#fff</color>
