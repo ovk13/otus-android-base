@@ -53,9 +53,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, FavouritesActivity::class.java)
             intent.putExtra(VISITED_FILMS, visitedFilms.toIntArray())
             intent.putExtra(FAVOURITE_FILMS, favouriteFilms.toIntArray())
-            intent.resolveActivity(packageManager)?.let {
-                startActivityForResult(intent, FAVOURITES_REQUEST_CODE)
-            }
+            startActivityForResult(intent, FAVOURITES_REQUEST_CODE)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -114,9 +112,7 @@ class MainActivity : AppCompatActivity() {
 
                     val intent = Intent(this@MainActivity, DetailsActivity::class.java)
                     intent.putExtra(FILM_DATA, FilmsList.items[dataPosition])
-                    intent.resolveActivity(packageManager)?.let {
-                        startActivityForResult(intent, DETAIL_REQUEST_CODE)
-                    }
+                    startActivityForResult(intent, DETAIL_REQUEST_CODE)
                 }
 
                 override fun onFavouritesClick(position: Int, dataPosition: Int) {

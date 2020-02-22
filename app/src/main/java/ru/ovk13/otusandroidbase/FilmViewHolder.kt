@@ -1,6 +1,5 @@
 package ru.ovk13.otusandroidbase
 
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -28,15 +27,12 @@ class FilmViewHolder(itemView: View, private val positionOffset: Int) :
         removeFromFavourites.visibility = View.GONE
 
         title.setText(titleResId)
-        if (visited) {
-            Log.d("Visited", "VIsited")
-            title.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    R.color.visited
-                )
+        title.setTextColor(
+            ContextCompat.getColor(
+                itemView.context,
+                if (visited) R.color.visited else R.color.title
             )
-        }
+        )
 
         if (inFavourites) {
             toggleFavourites.alpha = 1f

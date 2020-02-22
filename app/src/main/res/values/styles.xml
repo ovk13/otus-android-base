@@ -42,6 +42,7 @@
     <style name="Film.Title" parent="android:TextAppearance.Material">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:color">@color/title</item>
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

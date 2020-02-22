@@ -3,6 +3,7 @@
     <color name="colorPrimary">#222</color>
     <color name="colorPrimaryDark">#333</color>
     <color name="colorAccent">#fff</color>
+    <color name="title">#fff</color>
     <color name="visited">#bbb</color>
     <color name="inFavourites">#FF5959</color>
     <color name="deleteIcon">#ccc</color>
