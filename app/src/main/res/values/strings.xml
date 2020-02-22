@@ -18,4 +18,6 @@
     <string name="exitDialogNo">No</string>
     <string name="exitDialogYes">Yes</string>
     <string name="dayNightSwitcherLabel">Day/night mode</string>
+    <string name="favourites">Favourites</string>
+    <string name="addBtnDescription">Add film</string>
 </resources>

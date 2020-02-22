@@ -11,9 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingStart="@dimen/standardPadding"
-        android:paddingTop="@dimen/standardPadding"
-        android:paddingBottom="@dimen/standardPadding"
+        android:padding="@dimen/standardPadding"
         app:layout_constraintBottom_toTopOf="@id/dayNightSwitcher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,14 +20,14 @@
 
 
     <ImageButton
-        android:id="@+id/inviteBtn"
+        android:id="@+id/addBtn"
         style="@style/RoundIconButton"
         android:layout_width="@dimen/inviteButtonDiameter"
         android:layout_height="@dimen/inviteButtonDiameter"
         android:layout_marginEnd="@dimen/inviteButtonMargin"
         android:layout_marginBottom="@dimen/inviteButtonMargin"
-        android:contentDescription="@string/inviteBtnText"
-        android:src="@drawable/ic_person_add_black_24dp"
+        android:contentDescription="@string/addBtnDescription"
+        android:src="@drawable/ic_add"
         app:layout_constraintBottom_toTopOf="@id/dayNightSwitcher"
         app:layout_constraintEnd_toEndOf="parent" />
 

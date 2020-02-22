@@ -2,10 +2,15 @@
 <resources>
     <color name="colorPrimary">#666</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#537088</color>
+    <color name="colorAccent">#3C3E3F</color>
     <color name="black">#000</color>
     <color name="white">#fff</color>
-    <color name="visited">#333</color>
+    <color name="title">#000</color>
+    <color name="visited">#666</color>
     <color name="buttonBg">#666</color>
     <color name="buttonTextColor">#fff</color>
+    <color name="inFavourites">#C54545</color>
+    <color name="headerBg">#999</color>
+    <color name="deleteIcon">#333</color>
+    <color name="filmDecorator">#aaa</color>
 </resources>

@@ -3,86 +3,137 @@ package ru.ovk13.otusandroidbase
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ImageButton
+import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import ru.ovk13.otusandroidbase.FilmItem.Companion.IN_FAVOURITES
+import ru.ovk13.otusandroidbase.FilmItem.Companion.VISITED
+import ru.ovk13.otusandroidbase.FilmViewAdapter.Companion.TYPE_LIST
+import ru.ovk13.otusandroidbase.recyclerview.decorations.LineItemDecoration
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var filmsViews: Map<Int, Map<String, View>>
-    private lateinit var filmsData: Map<Int, FilmData>
-    private var visitedFilms: MutableSet<Int> = mutableSetOf()
+    private var visitedFilms: MutableList<Int> = mutableListOf()
+    private var favouriteFilms: MutableList<Int> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("EVENT", "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        initDayNightSwitcher()
+        getDataFromState(savedInstanceState)
+        initFilmsRecycler()
+
+        findViewById<ImageButton>(R.id.inviteBtn)?.setOnClickListener { inviteFriend() }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_favourites) {
+            val intent = Intent(this, FavouritesActivity::class.java)
+            intent.putExtra(VISITED_FILMS, visitedFilms.toIntArray())
+            intent.putExtra(FAVOURITE_FILMS, favouriteFilms.toIntArray())
+            startActivityForResult(intent, FAVOURITES_REQUEST_CODE)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initDayNightSwitcher() {
+        val dayNightSwitcher = findViewById<Switch>(R.id.dayNightSwitcher)
+        dayNightSwitcher.isChecked =
+            AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        Log.d("EVENT", dayNightSwitcher.isChecked.toString())
+        dayNightSwitcher?.setOnCheckedChangeListener { _, isChecked ->
+            Log.d("EVENT", isChecked.toString())
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+    }
+
+    private fun getDataFromState(savedInstanceState: Bundle?) {
         savedInstanceState?.apply {
-            visitedFilms = this.getIntArray(VISITED_FILMS)?.toMutableSet() ?: mutableSetOf()
+            visitedFilms = this.getIntArray(VISITED_FILMS)?.toMutableList() ?: mutableListOf()
+            favouriteFilms = this.getIntArray(FAVOURITE_FILMS)?.toMutableList() ?: mutableListOf()
         }
 
-        filmsViews = mapOf(
-            1 to mapOf(
-                NAME_VIEW to findViewById<TextView>(R.id.film1Name) as View,
-                BUTTON to findViewById<Button>(R.id.film1DetailsBtn) as View
-            ),
-            2 to mapOf(
-                NAME_VIEW to findViewById<TextView>(R.id.film2Name) as View,
-                BUTTON to findViewById<Button>(R.id.film2DetailsBtn) as View
-            ),
-            3 to mapOf(
-                NAME_VIEW to findViewById<TextView>(R.id.film3Name) as View,
-                BUTTON to findViewById<Button>(R.id.film3DetailsBtn) as View
-            )
-        )
+        updateProperties(visitedFilms, VISITED)
+        updateProperties(favouriteFilms, IN_FAVOURITES)
+    }
 
-        filmsData = mapOf(
-            1 to FilmData(R.string.film1Name, R.drawable.film1, R.string.film1Description),
-            2 to FilmData(R.string.film2Name, R.drawable.film2, R.string.film2Description),
-            3 to FilmData(R.string.film3Name, R.drawable.film3, R.string.film3Description)
-        )
-
-        for ((id, film) in filmsViews) {
-
-            if (visitedFilms.contains(id)) {
-                markVisited(id)
+    private fun updateProperties(listOfMarked: MutableList<Int>, property: String) {
+        FilmsList.items.forEachIndexed { pos, film ->
+            when (property) {
+                VISITED -> film.visited = listOfMarked.contains(pos)
+                IN_FAVOURITES -> film.inFavourites = listOfMarked.contains(pos)
             }
+        }
+    }
 
-            film[BUTTON]?.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(p0: View?) {
-                    markVisited(id)
+    private fun initFilmsRecycler() {
+        val recyclerView = findViewById<RecyclerView>(R.id.filmsRecycler)
+        val layoutManager =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false)
+            } else {
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            }
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = FilmViewAdapter(
+            LayoutInflater.from(this),
+            "",
+            TYPE_LIST,
+            FilmsList.items,
+            object : FilmViewAdapter.FilmClickListener {
+                override fun onDetailsClick(position: Int, dataPosition: Int) {
+                    markVisited(position, dataPosition, recyclerView)
+
                     val intent = Intent(this@MainActivity, DetailsActivity::class.java)
-                    intent.putExtra(FILM_DATA, filmsData[id])
-                    intent.resolveActivity(packageManager)?.let {
-                        startActivityForResult(intent, DETAIL_REQUEST_CODE)
+                    intent.putExtra(FILM_DATA, FilmsList.items[dataPosition])
+                    startActivityForResult(intent, DETAIL_REQUEST_CODE)
+                }
+
+                override fun onFavouritesClick(position: Int, dataPosition: Int) {
+                    if (favouriteFilms.contains(dataPosition)) {
+                        favouriteFilms.remove(dataPosition)
+                        FilmsList.items[dataPosition].inFavourites = false
+                    } else {
+                        favouriteFilms.add(dataPosition)
+                        FilmsList.items[dataPosition].inFavourites = true
                     }
+                    recyclerView.adapter?.notifyItemChanged(position)
                 }
-
             })
-        }
-
-        findViewById<ImageButton>(R.id.inviteBtn)?.setOnClickListener(object :
-            View.OnClickListener {
-            override fun onClick(p0: View?) {
-                inviteFriend()
-            }
-
-        })
-
-        findViewById<Switch>(R.id.dayNightSwitcher)?.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
-        })
+        val decorator =
+            LineItemDecoration(
+                10,
+                30,
+                ContextCompat.getColor(this, R.color.filmDecorator),
+                7f
+            )
+        recyclerView.addItemDecoration(decorator)
     }
 
     private fun inviteFriend() {
@@ -97,28 +148,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun markVisited(id: Int) {
-        Log.d("visitedCOlor", R.color.visited.toString())
-        (filmsViews[id]?.get(NAME_VIEW) as TextView).setTextColor(
-            ContextCompat.getColor(
-                this,
-                R.color.visited
-            )
-        )
+    private fun markVisited(position: Int, dataPosition: Int, recyclerView: RecyclerView) {
+        FilmsList.items[dataPosition].visited = true
+        recyclerView.adapter?.notifyItemChanged(position)
 
-        if (!visitedFilms.contains(id)) {
-            visitedFilms.add(id)
+        if (!visitedFilms.contains(dataPosition)) {
+            visitedFilms.add(dataPosition)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putIntArray(VISITED_FILMS, visitedFilms.toIntArray())
-        Log.i("save", visitedFilms.toString())
+        outState.putIntArray(FAVOURITE_FILMS, favouriteFilms.toIntArray())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
+        Log.d("EVENT", "onActivityResult")
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == DETAIL_REQUEST_CODE) {
@@ -132,6 +179,23 @@ class MainActivity : AppCompatActivity() {
             }
             Log.i(LIKE_TAG, like.toString())
             Log.i(LIKE_TAG, comment ?: "")
+        } else if (requestCode == FAVOURITES_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.let {
+                visitedFilms =
+                    it.getIntArrayExtra(VISITED_FILMS)?.toMutableList() ?: mutableListOf()
+                favouriteFilms =
+                    it.getIntArrayExtra(FAVOURITE_FILMS)?.toMutableList() ?: mutableListOf()
+                updateProperties(visitedFilms, VISITED)
+                updateProperties(favouriteFilms, IN_FAVOURITES)
+                val recyclerView = findViewById<RecyclerView>(R.id.filmsRecycler)
+                recyclerView?.adapter?.notifyDataSetChanged()
+
+                findViewById<Switch>(R.id.dayNightSwitcher).isChecked = it.getIntExtra(
+                    NIGHT_MODE,
+                    AppCompatDelegate.MODE_NIGHT_NO
+                ) == AppCompatDelegate.MODE_NIGHT_YES
+            }
+
         }
     }
 
@@ -151,13 +215,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val NAME_VIEW = "name_view"
-        const val BUTTON = "button"
         const val FILM_DATA = "name_value"
         const val VISITED_FILMS = "visited_films"
+        const val FAVOURITE_FILMS = "favourite_films"
         const val LIKE = "like"
         const val COMMENT = "comment"
         const val DETAIL_REQUEST_CODE = 13
+        const val FAVOURITES_REQUEST_CODE = 14
         const val LIKE_TAG = "LikeResult"
+        const val NIGHT_MODE = "night_mode"
     }
 }
