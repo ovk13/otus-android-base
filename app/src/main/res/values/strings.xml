@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">OtusAndroidBase</string>
+    <string name="app_name" translatable="false">OtusAndroidBase</string>
+    <string name="details">Details</string>
+    <string name="film1Name" translatable="false">Джон Уик</string>
+    <string name="film2Name" translatable="false">Джон Уик 2</string>
+    <string name="film3Name" translatable="false">Джон Уик 3</string>
+    <string name="film1Description" translatable="false">Джон Уик — на первый взгляд, самый обычный среднестатистический американец, который ведет спокойную мирную жизнь. Однако мало кто знает, что он был наёмным убийцей, причём одним из лучших профессионалов в своём деле.\n\nПосле того как сынок главы бандитской группы со своими приятелями угоняет его любимый «Мустанг» 1969 года выпуска, при этом убив его собаку Дейзи, которая была подарком недавно почившей супруги, Джон вынужден вернуться к своему прошлому. Теперь Уик начинает охоту за теми, кто имел неосторожность перейти ему дорогу, и он готов на всё, чтобы отомстить.</string>
+    <string name="film2Description" translatable="false">Когда бывший коллега Джона решает взять под свой контроль таинственную гильдию убийц, Уик вынужден выйти из отставки. Ведомый кровавой клятвой Джон отправляется в Рим, где ему придется сразиться с одними из самых опасных киллеров в мире.</string>
+    <string name="film3Description" translatable="false">Суперкиллер Джон Уик после нарушения кодекса тайной гильдии ассасинов получает статус изгоя — экскомьюникадо. За его голову назначена цена в 14 миллионов долларов, и армия самых жестоких профессиональных убийц со всего мира открывает на него кровавую охоту.</string>
+    <string name="inviteBtnText">Invite a friend</string>
+    <string name="inviteTitle">Invitation</string>
+    <string name="inviteText">Invitation text</string>
+    <string name="inviteChooserTitle">Invite a friend</string>
+    <string name="likeLabel">Like</string>
+    <string name="commentPlaceholder">Comment</string>
+    <string name="exitDialogTitle">Confirm action please</string>
+    <string name="exitDialogMessage">Do you really want to leave?</string>
+    <string name="exitDialogNo">No</string>
+    <string name="exitDialogYes">Yes</string>
+    <string name="dayNightSwitcherLabel">Day/night mode</string>
+    <string name="favourites">Favourites</string>
+    <string name="addBtnDescription">Add film</string>
 </resources>
