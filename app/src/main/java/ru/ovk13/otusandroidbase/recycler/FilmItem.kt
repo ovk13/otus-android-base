@@ -1,10 +1,11 @@
-package ru.ovk13.otusandroidbase
+package ru.ovk13.otusandroidbase.recycler
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class FilmItem(
+    val id: Int,
     val titleResId: Int,
     val coverResId: Int,
     val descriptionResId: Int,

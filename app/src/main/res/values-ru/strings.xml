@@ -5,7 +5,6 @@
     <string name="inviteTitle">Приглашение</string>
     <string name="inviteText">Текст приглашения</string>
     <string name="inviteChooserTitle">Пригласить друга</string>
-    <string name="likeLabel">Нравится</string>
     <string name="commentPlaceholder">Комментарий</string>
     <string name="exitDialogTitle">Пожалуйста, подтвердите действие</string>
     <string name="exitDialogMessage">Вы действительно хотите выйти?</string>
@@ -14,4 +13,10 @@
     <string name="dayNightSwitcherLabel">Дневной/ночной режим</string>
     <string name="favourites">Избранное</string>
     <string name="addBtnDescription">Добавить фильм</string>
+    <string name="menuTitleHome">Фильмы</string>
+    <string name="menuTitleFavourites">Избранное</string>
+    <string name="menuTitleSettings">Настрйоки</string>
+    <string name="completeAddToFavourites">Фильм успешно добавлен в избранное</string>
+    <string name="completeRemoveFromFavourites">Фильм успешно удален из избранного</string>
+    <string name="undoFavouritesAction">Отменить</string>
 </resources>
