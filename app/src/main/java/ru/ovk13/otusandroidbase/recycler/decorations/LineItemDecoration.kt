@@ -1,4 +1,4 @@
-package ru.ovk13.otusandroidbase.recyclerview.decorations
+package ru.ovk13.otusandroidbase.recycler.decorations
 
 import android.graphics.Canvas
 import android.graphics.Paint

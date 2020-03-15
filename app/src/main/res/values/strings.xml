@@ -11,7 +11,6 @@
     <string name="inviteTitle">Invitation</string>
     <string name="inviteText">Invitation text</string>
     <string name="inviteChooserTitle">Invite a friend</string>
-    <string name="likeLabel">Like</string>
     <string name="commentPlaceholder">Comment</string>
     <string name="exitDialogTitle">Confirm action please</string>
     <string name="exitDialogMessage">Do you really want to leave?</string>
@@ -20,4 +19,10 @@
     <string name="dayNightSwitcherLabel">Day/night mode</string>
     <string name="favourites">Favourites</string>
     <string name="addBtnDescription">Add film</string>
+    <string name="menuTitleHome">Films</string>
+    <string name="menuTitleFavourites">Favourites</string>
+    <string name="menuTitleSettings">Settings</string>
+    <string name="completeAddToFavourites">Add complete</string>
+    <string name="completeRemoveFromFavourites">Remove complete</string>
+    <string name="undoFavouritesAction">Undo</string>
 </resources>

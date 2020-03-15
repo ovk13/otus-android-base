@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#666</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#5B546F</color>
+    <color name="colorPrimaryDark">#413D50</color>
     <color name="colorAccent">#3C3E3F</color>
     <color name="black">#000</color>
     <color name="white">#fff</color>
     <color name="title">#000</color>
     <color name="visited">#666</color>
-    <color name="buttonBg">#666</color>
+    <color name="buttonBg">@color/colorPrimary</color>
     <color name="buttonTextColor">#fff</color>
-    <color name="inFavourites">#C54545</color>
-    <color name="headerBg">#999</color>
+    <color name="inFavourites">#5B546F</color>
+    <color name="headerBg">#968FAA</color>
     <color name="deleteIcon">#333</color>
-    <color name="filmDecorator">#aaa</color>
+    <color name="filmDecorator">#968FAA</color>
+    <color name="bottomNavigationActive">@color/white</color>
+    <color name="bottomNavigation">@color/colorPrimary</color>
+    <color name="bottomNavigationBackground">#D8DAE7</color>
+    <color name="bottomNavigationBackgroundActive">@color/colorPrimary</color>
+    <color name="snackBarAction">#BFB6D8</color>
+    <color name="fabIconColor">@color/white</color>
 </resources>

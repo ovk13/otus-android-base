@@ -2,7 +2,8 @@
 <resources>
     <dimen name="standardPadding">10dp</dimen>
     <dimen name="inviteButtonDiameter">60dp</dimen>
-    <dimen name="inviteButtonMargin">15dp</dimen>
+    <dimen name="fabMargin">15dp</dimen>
     <dimen name="filmsLinePadding">15dp</dimen>
-    <dimen name="dayNightSwitcherPadding">20dp</dimen>
+    <dimen name="settingsHorPadding">20dp</dimen>
+    <dimen name="settingsVerPadding">10dp</dimen>
 </resources>

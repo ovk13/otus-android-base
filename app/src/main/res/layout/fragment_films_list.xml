@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/filmsListLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/filmsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/standardPadding"
+            android:paddingTop="@dimen/standardPadding"
+            android:paddingEnd="@dimen/standardPadding"
+            android:paddingBottom="@dimen/standardPadding"
+            tools:listitem="@layout/film_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addBtn"
+            style="@style/Fab"
+            android:src="@drawable/ic_add"
+            android:visibility="gone" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/inviteBtn"
+            style="@style/Fab"
+            android:src="@drawable/ic_person_add"
+            android:visibility="gone" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

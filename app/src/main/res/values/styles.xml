@@ -9,6 +9,15 @@
         <item name="android:colorButtonNormal">@color/buttonBg</item>
     </style>
 
+    <style name="SettingsItem">
+        <item name="android:paddingStart">@dimen/settingsHorPadding</item>
+        <item name="android:paddingEnd">@dimen/settingsHorPadding</item>
+        <item name="android:paddingTop">@dimen/settingsVerPadding</item>
+        <item name="android:paddingBottom">@dimen/settingsVerPadding</item>
+
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="Header">
         <item name="android:background">@color/headerBg</item>
         <item name="android:gravity">center_vertical</item>
@@ -54,10 +63,19 @@
     </style>
 
     <style name="Film.Description">
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_width">0dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">@dimen/standardPadding</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="Fab">
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:layout_marginEnd">@dimen/fabMargin</item>
+        <item name="android:layout_marginBottom">@dimen/fabMargin</item>
+        <item name="android:tint">@color/fabIconColor</item>
     </style>
 
 </resources>
