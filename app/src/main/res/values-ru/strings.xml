@@ -19,4 +19,5 @@
     <string name="completeAddToFavourites">Фильм успешно добавлен в избранное</string>
     <string name="completeRemoveFromFavourites">Фильм успешно удален из избранного</string>
     <string name="undoFavouritesAction">Отменить</string>
+    <string name="requestTimeout">Превышено время ожидания от сервера</string>
 </resources>
