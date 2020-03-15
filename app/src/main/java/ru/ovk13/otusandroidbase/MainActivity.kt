@@ -5,43 +5,107 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import ru.ovk13.otusandroidbase.recycler.FilmItem
-import ru.ovk13.otusandroidbase.recycler.FilmItem.Companion.IN_FAVOURITES
-import ru.ovk13.otusandroidbase.recycler.FilmItem.Companion.VISITED
-import ru.ovk13.otusandroidbase.recycler.FilmViewAdapter
-import ru.ovk13.otusandroidbase.recycler.FilmViewAdapter.Companion.TYPE_FAVOURITES
-import ru.ovk13.otusandroidbase.recycler.FilmViewAdapter.Companion.TYPE_LIST
+import kotlinx.android.synthetic.main.activity_main.*
+import ru.ovk13.otusandroidbase.data.Film
+import ru.ovk13.otusandroidbase.data.Film.Companion.IN_FAVOURITES
+import ru.ovk13.otusandroidbase.data.Film.Companion.VISITED
+import ru.ovk13.otusandroidbase.data.FilmsResponse
+import ru.ovk13.otusandroidbase.network.FilmsRepo
+import ru.ovk13.otusandroidbase.ui.adapters.FilmViewAdapter
+import ru.ovk13.otusandroidbase.ui.adapters.FilmViewAdapter.Companion.TYPE_FAVOURITES
+import ru.ovk13.otusandroidbase.ui.adapters.FilmViewAdapter.Companion.TYPE_LIST
+import java.net.SocketTimeoutException
 
-class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
+class MainActivity : AppCompatActivity(), FilmsListFragment.FilmListListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
 
+    var filmsList: MutableList<Film?>? = null
+    var currentPage: Int = 1
+    var filmsTotalPages: Int = 0
+    var isLoading = false
     private var visitedFilmsIds: MutableList<Int> = mutableListOf()
-    private var favouriteFilmsIds: MutableList<Int> = mutableListOf()
+    var favouriteFilmsIds: MutableList<Int> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("EVENT", "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            val listFragment =
-                FilmsListFragment.newInstance(FilmsList.items.keys.toIntArray(), TYPE_LIST)
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, listFragment, FilmsListFragment.TAG)
-                .commit()
-        }
         getDataFromState(savedInstanceState)
+
+        if (filmsList === null) {
+            filmsList = mutableListOf()
+            loadFullFilmsList()
+        }
+
 
         val mainNavigationView = findViewById<BottomNavigationView>(R.id.mainNavigation)
         mainNavigationView.setOnNavigationItemSelectedListener(this)
 
+    }
+
+    private fun loadFullFilmsList() {
+        showLoader()
+        FilmsRepo.loadItemsPage(object : FilmsRepo.LoadDataCallback {
+            override fun onSuccess(data: FilmsResponse) {
+                hideLoader()
+                Log.d("FAV", favouriteFilmsIds.joinToString())
+
+                filmsList = data.results
+                currentPage = data.page
+                filmsTotalPages = data.totalPages
+                updateProperties(visitedFilmsIds, VISITED)
+                updateProperties(favouriteFilmsIds, IN_FAVOURITES)
+
+                showDefaultFragment()
+            }
+
+            override fun onError(error: String) {
+                hideLoader()
+                Toast.makeText(this@MainActivity, error, Toast.LENGTH_LONG)
+                    .show()
+                showDefaultFragment()
+            }
+
+            override fun onError(t: Throwable) {
+                hideLoader()
+                if (t is SocketTimeoutException) {
+                    Toast.makeText(this@MainActivity, R.string.requestTimeout, Toast.LENGTH_LONG)
+                        .show()
+                } else {
+                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_LONG)
+                        .show()
+                }
+                showDefaultFragment()
+            }
+
+        })
+    }
+
+    private fun showDefaultFragment() {
+        val listFragment =
+            FilmsListFragment.newInstance(TYPE_LIST)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragmentContainer, listFragment, FilmsListFragment.TAG)
+            .commit()
+    }
+
+    private fun showLoader() {
+        loader.visibility = View.VISIBLE
+    }
+
+    private fun hideLoader() {
+        loader.visibility = View.GONE
     }
 
     private fun getDataFromState(savedInstanceState: Bundle?) {
@@ -50,21 +114,18 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
             favouriteFilmsIds = this.getIntArray(FAVOURITE_FILMS)?.toMutableList()
                 ?: mutableListOf()
         }
-
-        updateProperties(visitedFilmsIds, VISITED)
-        updateProperties(favouriteFilmsIds, IN_FAVOURITES)
     }
 
     private fun updateProperties(listOfMarked: MutableList<Int>, property: String) {
-        FilmsList.items.forEach { (pos, film) ->
+        filmsList?.forEach {
             when (property) {
-                VISITED -> film.visited = listOfMarked.contains(pos)
-                IN_FAVOURITES -> film.inFavourites = listOfMarked.contains(pos)
+                VISITED -> it?.visited = listOfMarked.contains(it?.id)
+                IN_FAVOURITES -> it?.inFavourites = listOfMarked.contains(it?.id)
             }
         }
     }
 
-    private fun markVisited(filmItem: FilmItem) {
+    private fun markVisited(filmItem: Film) {
         filmItem.visited = true
 
         if (!visitedFilmsIds.contains(filmItem.id)) {
@@ -102,7 +163,7 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
         when (id) {
             R.id.mainNavigationHome -> {
                 val fragment =
-                    FilmsListFragment.newInstance(FilmsList.items.keys.toIntArray(), TYPE_LIST)
+                    FilmsListFragment.newInstance(TYPE_LIST)
                 clearBackStack()
                 supportFragmentManager
                     .beginTransaction()
@@ -113,7 +174,7 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
             }
             R.id.mainNavigationFavourites -> {
                 val fragment =
-                    FilmsListFragment.newInstance(favouriteFilmsIds.toIntArray(), TYPE_FAVOURITES)
+                    FilmsListFragment.newInstance(TYPE_FAVOURITES)
                 clearBackStack()
                 supportFragmentManager
                     .beginTransaction()
@@ -142,7 +203,7 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
         }
     }
 
-    private fun openFilmDetails(filmItem: FilmItem) {
+    private fun openFilmDetails(filmItem: Film) {
         val detailsFragment = FilmsDetailsFragment.newInstance(filmItem)
 
         supportFragmentManager
@@ -152,13 +213,13 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
             .commit()
     }
 
-    override fun onDetailsClick(filmItem: FilmItem) {
+    override fun onDetailsClick(filmItem: Film) {
         openFilmDetails(filmItem)
         markVisited(filmItem)
     }
 
     override fun onToggleFavouritesClick(
-        filmItem: FilmItem,
+        filmItem: Film,
         recyclerView: RecyclerView,
         position: Int
     ) {
@@ -192,27 +253,30 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
     }
 
     override fun onRemoveFromFavouritesClick(
-        filmItem: FilmItem,
+        filmItem: Film,
         recyclerView: RecyclerView,
-        recyclerPosition: Int,
-        favouritesPosition: Int
+        recyclerPosition: Int
     ) {
+        Log.d("REMOVE_CLICK id", filmItem.id.toString())
+        Log.d("REMOVE_CLICK fav", favouriteFilmsIds.joinToString())
         if (!favouriteFilmsIds.contains(filmItem.id)) {
             return
         }
 
         val adapter = recyclerView.adapter as FilmViewAdapter
-        Log.d("array position", favouritesPosition.toString())
-        Log.d("RV position", recyclerPosition.toString())
+        val favouritesPosition = adapter.itemsList.indexOf(filmItem)
+        Log.d("REMOVE_CLICK array pos", favouritesPosition.toString())
+        Log.d("REMOVE_CLICK RV pos", recyclerPosition.toString())
 
-        favouriteFilmsIds.removeAt(favouritesPosition)
-        adapter.itemsIds.removeAt(favouritesPosition)
+        favouriteFilmsIds.remove(filmItem.id)
+        adapter.itemsList.remove(filmItem)
         filmItem.inFavourites = false
         adapter.notifyItemRemoved(recyclerPosition)
 
         showRemoveFromFavouritesSnackBar(View.OnClickListener {
             favouriteFilmsIds.add(favouritesPosition, filmItem.id)
-            adapter.itemsIds.add(favouritesPosition, filmItem.id)
+            adapter.itemsList.add(favouritesPosition, filmItem)
+            filmItem.inFavourites = true
             adapter.notifyItemInserted(recyclerPosition)
         })
 
@@ -222,16 +286,16 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
      * Добавление в избранное на странице избранного
      */
     override fun onAddToFavouritesClick(id: Int, recyclerView: RecyclerView) {
-        val adapter = recyclerView.adapter as FilmViewAdapter
-        favouriteFilmsIds.add(id)
-        adapter.itemsIds.add(id)
-        val itemPosition = adapter.itemCount - 1
-        adapter.notifyItemInserted(itemPosition)
-        showAddToFavouritesSnackBar(View.OnClickListener {
-            favouriteFilmsIds.removeAt(adapter.itemsIds.lastIndex)
-            adapter.itemsIds.removeAt(adapter.itemsIds.lastIndex)
-            adapter.notifyItemRemoved(itemPosition)
-        })
+//        val adapter = recyclerView.adapter as FilmViewAdapter
+//        favouriteFilmsIds.add(id)
+//        adapter.itemsIds.add(id)
+//        val itemPosition = adapter.itemCount - 1
+//        adapter.notifyItemInserted(itemPosition)
+//        showAddToFavouritesSnackBar(View.OnClickListener {
+//            favouriteFilmsIds.removeAt(adapter.itemsIds.lastIndex)
+//            adapter.itemsIds.removeAt(adapter.itemsIds.lastIndex)
+//            adapter.notifyItemRemoved(itemPosition)
+//        })
     }
 
     private fun showAddToFavouritesSnackBar(actionClickListener: View.OnClickListener) {
@@ -252,6 +316,86 @@ class MainActivity : AppCompatActivity(), FilmsListFragment.FilmClickListener,
                 ContextCompat.getColor(this, R.color.snackBarAction)
             )
             .show()
+    }
+
+    override fun onListScroll(recyclerView: RecyclerView) {
+        Log.d("NEW_PAGE", currentPage.toString())
+        Log.d("NEW_PAGE", filmsTotalPages.toString())
+        Log.d(
+            "NEW_PAGE",
+            (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                .toString()
+        )
+        Log.d("NEW_PAGE", recyclerView.adapter?.itemCount.toString())
+        if (!isLoading && (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1 == recyclerView.adapter?.itemCount) {
+
+            val nextPage = currentPage + 1
+            if (nextPage > filmsTotalPages) {
+                return
+            }
+            Log.d("NEW_PAGE", nextPage.toString())
+            Log.d("NEW_PAGE", "new page loading")
+
+            val adapter = (recyclerView.adapter as FilmViewAdapter)
+            showRecyclerLoader(adapter)
+
+            isLoading = true
+
+            FilmsRepo.loadItemsPage(object : FilmsRepo.LoadDataCallback {
+                override fun onSuccess(data: FilmsResponse) {
+                    hideRecyclerLoader(adapter)
+                    isLoading = false
+                    val startRangePosition = adapter.itemCount
+                    val endRangePosition = startRangePosition + data.results.size - 1
+                    filmsList?.addAll(data.results)
+                    currentPage = data.page
+
+                    adapter.notifyItemRangeInserted(startRangePosition, endRangePosition)
+                }
+
+                override fun onError(error: String) {
+                    hideRecyclerLoader(adapter)
+                    isLoading = false
+                    Toast.makeText(this@MainActivity, error, Toast.LENGTH_LONG)
+                        .show()
+                }
+
+                override fun onError(t: Throwable) {
+                    hideRecyclerLoader(adapter)
+                    isLoading = false
+                    if (t is SocketTimeoutException) {
+                        Toast.makeText(
+                                this@MainActivity,
+                                R.string.requestTimeout,
+                                Toast.LENGTH_LONG
+                            )
+                            .show()
+                    }
+                }
+
+            }, nextPage)
+        }
+    }
+
+    private fun showRecyclerLoader(adapter: FilmViewAdapter) {
+        adapter.itemsList.add(null)
+        adapter.notifyItemInserted(adapter.itemCount - 1)
+    }
+
+    private fun hideRecyclerLoader(adapter: FilmViewAdapter) {
+        if (!adapter.itemsList.contains(null)) {
+            return
+        }
+        adapter.itemsList.remove(null)
+        adapter.notifyItemRemoved(adapter.itemCount)
+    }
+
+    override fun onRefresh(pullToRefresh: SwipeRefreshLayout, adapter: FilmViewAdapter) {
+        pullToRefresh.isRefreshing = false
+        filmsList?.clear()
+        adapter.notifyDataSetChanged()
+        loadFullFilmsList()
+        adapter.notifyDataSetChanged()
     }
 
     companion object {

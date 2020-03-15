@@ -9,7 +9,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import ru.ovk13.otusandroidbase.recycler.FilmItem
+import com.bumptech.glide.Glide
+import ru.ovk13.otusandroidbase.data.Film
 
 
 class FilmsDetailsFragment : Fragment() {
@@ -24,12 +25,17 @@ class FilmsDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val filmItem: FilmItem = arguments?.getParcelable(FILM_ITEM)!!
+        val filmItem: Film = arguments?.getParcelable(FILM_ITEM)!!
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setTitle(filmItem.titleResId)
-        view.findViewById<TextView>(R.id.filmDescription).setText(filmItem.descriptionResId)
-        view.findViewById<ImageView>(R.id.filmCover).setImageResource(filmItem.coverResId)
+        toolbar.title = filmItem.title
+        view.findViewById<TextView>(R.id.filmDescription).text = filmItem.overview
+
+        val coverView = view.findViewById<ImageView>(R.id.filmCover)
+        Glide.with(coverView.context)
+            .load(filmItem.posterPath)
+            .placeholder(R.drawable.ic_no_photo)
+            .into(coverView)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -42,7 +48,7 @@ class FilmsDetailsFragment : Fragment() {
         const val TAG = "FilmsDetailFragment"
         const val FILM_ITEM = "FilmItem"
 
-        fun newInstance(filmItem: FilmItem): FilmsDetailsFragment {
+        fun newInstance(filmItem: Film): FilmsDetailsFragment {
             val fragment = FilmsDetailsFragment()
 
             val bundle = Bundle()
