@@ -14,13 +14,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.ovk13.otusandroidbase.recycler.FilmItem
-import ru.ovk13.otusandroidbase.recycler.FilmViewAdapter
-import ru.ovk13.otusandroidbase.recycler.decorations.LineItemDecoration
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_films_list.view.*
+import ru.ovk13.otusandroidbase.data.Film
+import ru.ovk13.otusandroidbase.ui.adapters.FilmViewAdapter
+import ru.ovk13.otusandroidbase.ui.decorations.LineItemDecoration
 
 class FilmsListFragment : Fragment() {
 
-    private var listener: FilmClickListener? = null
+    private var listener: FilmListListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,8 +34,6 @@ class FilmsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initRecyclerView(view)
     }
 
     private fun initRecyclerView(view: View) {
@@ -48,28 +48,30 @@ class FilmsListFragment : Fragment() {
             }
 
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = FilmViewAdapter(
-            LayoutInflater.from(context),
-            if (listType == FilmViewAdapter.TYPE_FAVOURITES) getString(R.string.favourites) else "",
-            listType,
-            arguments?.getIntArray(LIST_ITEMS)?.toMutableList() ?: mutableListOf(),
-            { listener?.onDetailsClick(it) },
-            { filmItem, position ->
-                listener?.onToggleFavouritesClick(
-                    filmItem,
-                    recyclerView,
-                    position
-                )
-            },
-            { filmItem, recyclerPosition, favouritesPosition ->
-                listener?.onRemoveFromFavouritesClick(
-                    filmItem,
-                    recyclerView,
-                    recyclerPosition,
-                    favouritesPosition
-                )
-            }
-        )
+        recyclerView.adapter =
+            FilmViewAdapter(
+                LayoutInflater.from(context),
+                if (listType == FilmViewAdapter.TYPE_FAVOURITES) getString(
+                    R.string.favourites
+                ) else "",
+                listType,
+                getListItems(listType),
+                { listener?.onDetailsClick(it) },
+                { filmItem, position ->
+                    listener?.onToggleFavouritesClick(
+                        filmItem,
+                        recyclerView,
+                        position
+                    )
+                },
+                { filmItem, recyclerPosition ->
+                    listener?.onRemoveFromFavouritesClick(
+                        filmItem,
+                        recyclerView,
+                        recyclerPosition
+                    )
+                }
+            )
         val decorator = LineItemDecoration(
             10,
             30,
@@ -78,7 +80,40 @@ class FilmsListFragment : Fragment() {
         )
         recyclerView.addItemDecoration(decorator)
 
+        if (listType == FilmViewAdapter.TYPE_LIST) {
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    listener?.onListScroll(recyclerView)
+                }
+            })
+
+            view.pullToRefresh.isEnabled = true
+            view.pullToRefresh.setOnRefreshListener {
+                listener?.onRefresh(view.pullToRefresh, recyclerView.adapter as FilmViewAdapter)
+            }
+        } else {
+            view.pullToRefresh.isEnabled = false
+        }
+
         initButtons(listType, view, recyclerView)
+    }
+
+    private fun getListItems(listType: Int): MutableList<Film?> {
+
+        val fullFilmsList = (activity as MainActivity).filmsList ?: mutableListOf()
+
+        if (listType == FilmViewAdapter.TYPE_LIST) {
+            return fullFilmsList
+        } else {
+            val favouritesFilmsList = mutableListOf<Film?>()
+            (activity as MainActivity).favouriteFilmsIds.forEach { id ->
+                val filmItem = fullFilmsList.find { it?.id == id }
+                if (filmItem !== null) {
+                    favouritesFilmsList.add(filmItem)
+                }
+            }
+            return favouritesFilmsList
+        }
     }
 
     private fun initButtons(listType: Int, view: View, recyclerView: RecyclerView) {
@@ -87,8 +122,8 @@ class FilmsListFragment : Fragment() {
         val inviteBtn = view.findViewById<ImageButton>(R.id.inviteBtn)
 
         if (listType == FilmViewAdapter.TYPE_FAVOURITES) {
-            initAddButton(addBtn, recyclerView)
-            showButton(addBtn)
+//            initAddButton(addBtn, recyclerView)
+//            showButton(addBtn)
             hideButton(inviteBtn)
         } else {
             initInviteButton(inviteBtn)
@@ -133,27 +168,28 @@ class FilmsListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         Log.d("LISTENER_INIT", activity.toString())
-        if (activity is FilmClickListener) {
-            listener = activity as FilmClickListener
+        if (activity is FilmListListener) {
+            listener = activity as FilmListListener
         } else {
             throw Exception("No FilmClickListener")
         }
+
+        initRecyclerView(view!!)
     }
 
-    interface FilmClickListener {
-        fun onDetailsClick(filmItem: FilmItem)
+    interface FilmListListener {
+        fun onDetailsClick(filmItem: Film)
         fun onToggleFavouritesClick(
-            filmItem: FilmItem,
+            filmItem: Film,
             recyclerView: RecyclerView,
             position: Int
         ) {
         }
 
         fun onRemoveFromFavouritesClick(
-            filmItem: FilmItem,
+            filmItem: Film,
             recyclerView: RecyclerView,
-            recyclerPosition: Int,
-            favouritesPosition: Int
+            recyclerPosition: Int
         ) {
         }
 
@@ -163,6 +199,16 @@ class FilmsListFragment : Fragment() {
         ) {
         }
 
+        fun onListScroll(
+            recyclerView: RecyclerView
+        ) {
+        }
+
+        fun onRefresh(
+            pullToRefresh: SwipeRefreshLayout,
+            adapter: FilmViewAdapter
+        ) {
+        }
     }
 
     companion object {
@@ -170,11 +216,10 @@ class FilmsListFragment : Fragment() {
         const val LIST_ITEMS = "filmsListItems"
         const val LIST_TYPE = "filmsListType"
 
-        fun newInstance(filmsListIds: IntArray, type: Int): FilmsListFragment {
+        fun newInstance(type: Int): FilmsListFragment {
             val fragment = FilmsListFragment()
 
             val bundle = Bundle()
-            bundle.putIntArray(LIST_ITEMS, filmsListIds)
             bundle.putInt(LIST_TYPE, type)
 
             fragment.arguments = bundle

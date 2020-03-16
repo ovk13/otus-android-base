@@ -25,4 +25,5 @@
     <string name="completeAddToFavourites">Add complete</string>
     <string name="completeRemoveFromFavourites">Remove complete</string>
     <string name="undoFavouritesAction">Undo</string>
+    <string name="requestTimeout">Request timeout</string>
 </resources>

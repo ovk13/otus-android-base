@@ -1,4 +1,4 @@
-package ru.ovk13.otusandroidbase
+package ru.ovk13.otusandroidbase.ui.viewholders
 
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
