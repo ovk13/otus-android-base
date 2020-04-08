@@ -25,5 +25,9 @@
     <string name="completeAddToFavourites">Add complete</string>
     <string name="completeRemoveFromFavourites">Remove complete</string>
     <string name="undoFavouritesAction">Undo</string>
+    <string name="tryAgainAction">Try again</string>
     <string name="requestTimeout">Request timeout</string>
+    <string name="loadFailedText">Failed to load movies</string>
+    <string name="loadPageFailedText">Failed to load page</string>
+    <string name="reloadBtn">Try again</string>
 </resources>

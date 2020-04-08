@@ -1,11 +1,11 @@
-package ru.ovk13.otusandroidbase.data
+package ru.ovk13.otusandroidbase.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Film(
+data class FilmDataModel(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("overview")

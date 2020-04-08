@@ -21,6 +21,31 @@
                 android:paddingBottom="@dimen/standardPadding"
                 tools:listitem="@layout/film_item" />
 
+        <LinearLayout
+                android:id="@+id/loadFailedWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/standardPadding"
+                    android:text="@string/loadFailedText"
+                    android:textSize="18sp" />
+
+            <Button
+                    android:id="@+id/reloadButton"
+                    style="@style/LightButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/reloadBtn" />
+        </LinearLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addBtn"
                 style="@style/Fab"
