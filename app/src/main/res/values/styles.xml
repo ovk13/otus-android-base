@@ -42,6 +42,13 @@
         <item name="android:textColor">@color/buttonTextColor</item>
     </style>
 
+    <style name="LightButton" parent="android:Widget.Material.Light.Button">
+        <item name="android:textColor">@color/lightButtonText</item>
+        <item name="android:background">@color/lightButtonBg</item>
+        <item name="android:paddingStart">@dimen/standardPadding</item>
+        <item name="android:paddingEnd">@dimen/standardPadding</item>
+    </style>
+
     <style name="RoundIconButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/btn_round</item>
         <item name="android:tint">@color/buttonTextColor</item>

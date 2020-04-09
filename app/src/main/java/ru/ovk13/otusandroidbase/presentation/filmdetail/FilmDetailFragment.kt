@@ -1,4 +1,4 @@
-package ru.ovk13.otusandroidbase
+package ru.ovk13.otusandroidbase.presentation.filmdetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,22 +10,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import ru.ovk13.otusandroidbase.data.Film
+import ru.ovk13.otusandroidbase.R
+import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 
 
-class FilmsDetailsFragment : Fragment() {
+class FilmDetailFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_films_details, container, false)
+        return inflater.inflate(R.layout.fragment_film_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val filmItem: Film = arguments?.getParcelable(FILM_ITEM)!!
+        val filmItem: FilmDataModel = arguments?.getParcelable(FILM_ITEM)!!
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = filmItem.title
@@ -48,8 +49,9 @@ class FilmsDetailsFragment : Fragment() {
         const val TAG = "FilmsDetailFragment"
         const val FILM_ITEM = "FilmItem"
 
-        fun newInstance(filmItem: Film): FilmsDetailsFragment {
-            val fragment = FilmsDetailsFragment()
+        fun newInstance(filmItem: FilmDataModel): FilmDetailFragment {
+            val fragment =
+                FilmDetailFragment()
 
             val bundle = Bundle()
             bundle.putParcelable(FILM_ITEM, filmItem)

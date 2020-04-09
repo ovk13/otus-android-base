@@ -19,4 +19,6 @@
     <color name="bottomNavigationBackgroundActive">@color/colorPrimary</color>
     <color name="snackBarAction">#BFB6D8</color>
     <color name="fabIconColor">@color/white</color>
+    <color name="lightButtonBg">#E9E6EF</color>
+    <color name="lightButtonText">#47405A</color>
 </resources>
