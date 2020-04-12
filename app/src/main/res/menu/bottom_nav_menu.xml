@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/mainNavigationHome"
+            android:id="@+id/films_list_graph"
             android:icon="@drawable/ic_home"
             android:title="@string/menuTitleHome" />
 
     <item
-            android:id="@+id/mainNavigationFavourites"
+            android:id="@+id/film_favourites_graph"
             android:icon="@drawable/ic_heart"
             android:title="@string/menuTitleFavourites" />
 
     <item
-            android:id="@+id/mainNavigationSettings"
+            android:id="@+id/settings_graph"
             android:icon="@drawable/ic_settings"
             android:title="@string/menuTitleSettings" />
 

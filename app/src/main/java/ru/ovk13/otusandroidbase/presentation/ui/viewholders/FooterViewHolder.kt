@@ -1,4 +1,4 @@
-package ru.ovk13.otusandroidbase.ui.viewholders
+package ru.ovk13.otusandroidbase.presentation.ui.viewholders
 
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView

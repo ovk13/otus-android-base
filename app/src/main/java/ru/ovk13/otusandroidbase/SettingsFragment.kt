@@ -1,7 +1,6 @@
 package ru.ovk13.otusandroidbase
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,9 +28,7 @@ class SettingsFragment : Fragment() {
         val dayNightSwitcher = view.findViewById<Switch>(R.id.dayNightSwitcher)
         dayNightSwitcher.isChecked =
             AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-        Log.d("EVENT", dayNightSwitcher.isChecked.toString())
         dayNightSwitcher?.setOnCheckedChangeListener { _, isChecked ->
-            Log.d("EVENT", isChecked.toString())
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {

@@ -1,12 +1,12 @@
-package ru.ovk13.otusandroidbase.ui.decorations
+package ru.ovk13.otusandroidbase.presentation.ui.decorations
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import ru.ovk13.otusandroidbase.ui.viewholders.FooterViewHolder
-import ru.ovk13.otusandroidbase.ui.viewholders.HeaderViewHolder
+import ru.ovk13.otusandroidbase.presentation.ui.viewholders.FooterViewHolder
+import ru.ovk13.otusandroidbase.presentation.ui.viewholders.HeaderViewHolder
 
 class LineItemDecoration(
     private val offsetHorizontal: Int,

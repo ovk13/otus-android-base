@@ -1,30 +1,59 @@
-package ru.ovk13.otusandroidbase.ui.adapters
+package ru.ovk13.otusandroidbase.presentation.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.ovk13.otusandroidbase.R
-import ru.ovk13.otusandroidbase.data.Film
-import ru.ovk13.otusandroidbase.ui.viewholders.FavouriteFilmViewHolder
-import ru.ovk13.otusandroidbase.ui.viewholders.FilmViewHolder
-import ru.ovk13.otusandroidbase.ui.viewholders.FooterViewHolder
-import ru.ovk13.otusandroidbase.ui.viewholders.HeaderViewHolder
+import ru.ovk13.otusandroidbase.data.model.FilmDataModel
+import ru.ovk13.otusandroidbase.presentation.ui.viewholders.FavouriteFilmViewHolder
+import ru.ovk13.otusandroidbase.presentation.ui.viewholders.FilmViewHolder
+import ru.ovk13.otusandroidbase.presentation.ui.viewholders.FooterViewHolder
+import ru.ovk13.otusandroidbase.presentation.ui.viewholders.HeaderViewHolder
 
 class FilmViewAdapter(
     private val inflater: LayoutInflater,
     private val title: String,
     private val type: Int,
-    var itemsList: MutableList<Film?>,
-    private val detailsClickListener: ((filmItem: Film) -> Unit)?,
-    private val favouritesToggleClickListener: ((filmItem: Film, position: Int) -> Unit)?,
-    private val favouritesDeleteClickListener: ((filmItem: Film, recyclerPosition: Int) -> Unit)?
+    private val listener: FilmListListener
+//    private val detailsClickListener: ((filmItem: FilmDataModel) -> Unit)?,
+//    private val favouritesToggleClickListener: ((filmItem: FilmDataModel, position: Int) -> Unit)?,
+//    private val favouritesDeleteClickListener: ((filmItem: FilmDataModel, recyclerPosition: Int) -> Unit)?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var itemsList: MutableList<FilmDataModel?> = mutableListOf()
 
     // Отступ на header
     private val itemsOffset = if (title.isEmpty()) 0 else 1
     private lateinit var mRecyclerView: RecyclerView
+
+    fun setItems(items: MutableList<FilmDataModel?>, callback: () -> Unit) {
+        itemsList.clear()
+        itemsList.addAll(items)
+
+        notifyDataSetChanged()
+        callback.invoke()
+    }
+
+    fun clearItems() {
+        itemsList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun addItem(item: FilmDataModel?) {
+        itemsList.add(item)
+        notifyItemInserted(itemCount - 1)
+    }
+
+    fun removeItem(item: FilmDataModel?) {
+        if (!itemsList.contains(item)) {
+            return
+        }
+        itemsList.remove(item)
+        notifyItemRemoved(itemCount)
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         mRecyclerView = recyclerView
@@ -79,14 +108,14 @@ class FilmViewAdapter(
             val item = itemsList[itemPosition]
 
             if (holder is FilmViewHolder) {
-                bindFilmViewHolder(holder, item as Film)
+                bindFilmViewHolder(holder, item as FilmDataModel)
             } else if (holder is FavouriteFilmViewHolder) {
-                bindFavoriteFilmViewHolder(holder, item as Film)
+                bindFavoriteFilmViewHolder(holder, item as FilmDataModel)
             }
         }
     }
 
-    private fun bindFilmViewHolder(holder: FilmViewHolder, filmItem: Film) {
+    private fun bindFilmViewHolder(holder: FilmViewHolder, filmItem: FilmDataModel) {
         holder.bind(
             filmItem.title,
             filmItem.posterPath,
@@ -94,27 +123,64 @@ class FilmViewAdapter(
             filmItem.inFavourites
         )
         holder.toggleFavourites.setOnClickListener {
-            favouritesToggleClickListener?.invoke(filmItem, holder.adapterPosition - itemsOffset)
+            listener.onToggleFavouritesClick(filmItem, holder.adapterPosition - itemsOffset)
         }
         holder.detailsBtn.setOnClickListener {
-            detailsClickListener?.invoke(filmItem)
+            listener.onDetailsClick(filmItem, holder.adapterPosition - itemsOffset)
         }
     }
 
-    private fun bindFavoriteFilmViewHolder(holder: FavouriteFilmViewHolder, filmItem: Film) {
+    private fun bindFavoriteFilmViewHolder(
+        holder: FavouriteFilmViewHolder,
+        filmItem: FilmDataModel
+    ) {
         holder.bind(
             filmItem.title,
             filmItem.posterPath,
             filmItem.visited
         )
         holder.removeFromFavourites.setOnClickListener {
-            favouritesDeleteClickListener?.invoke(
-                filmItem,
-                holder.adapterPosition
-            )
+            listener.onRemoveFromFavouritesClick(filmItem, holder.adapterPosition)
         }
         holder.detailsBtn.setOnClickListener {
-            detailsClickListener?.invoke(filmItem)
+            listener.onDetailsClick(filmItem, holder.adapterPosition - itemsOffset)
+        }
+    }
+
+
+    interface FilmListListener {
+        fun onDetailsClick(
+            filmItem: FilmDataModel,
+            position: Int
+        )
+
+        fun onToggleFavouritesClick(
+            filmItem: FilmDataModel,
+            position: Int
+        ) {
+        }
+
+        fun onRemoveFromFavouritesClick(
+            filmItem: FilmDataModel,
+            position: Int
+        ) {
+        }
+
+        fun onAddToFavouritesClick(
+            id: Int,
+            recyclerView: RecyclerView
+        ) {
+        }
+
+        fun onListScroll(
+            recyclerView: RecyclerView
+        ) {
+        }
+
+        fun onRefresh(
+            pullToRefresh: SwipeRefreshLayout,
+            adapter: FilmViewAdapter
+        ) {
         }
     }
 

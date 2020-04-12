@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/films_list_graph"
+        app:startDestination="@id/filmsListFragment">
+
+    <fragment
+            android:id="@+id/filmsListFragment"
+            android:name="ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListFragment"
+            android:label="FilmsListFragment">
+        <action
+                android:id="@+id/action_filmsListFragment_to_filmDetailFragment"
+                app:destination="@id/filmDetailFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/filmDetailFragment"
+            android:name="ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment"
+            android:label="FilmDetailFragment">
+        <argument
+                android:name="id"
+                app:argType="integer" />
+    </fragment>
+</navigation>

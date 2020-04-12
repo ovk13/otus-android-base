@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/film_favourites_graph"
+        app:startDestination="@id/favouriteFilmsListFragment">
+    <fragment
+            android:id="@+id/favouriteFilmsListFragment"
+            android:name="ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListFragment"
+            android:label="FavouriteFilmsListFragment">
+        <action
+                android:id="@+id/action_favouriteFilmsListFragment_to_filmDetailFragment2"
+                app:destination="@id/filmDetailFragment2" />
+    </fragment>
+    <fragment
+            android:id="@+id/filmDetailFragment2"
+            android:name="ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment"
+            android:label="FilmDetailFragment" />
+</navigation>
