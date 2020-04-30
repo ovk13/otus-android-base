@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        getDataFromState(savedInstanceState)
-
         setupBottomNavigation()
 
     }
@@ -26,25 +24,9 @@ class MainActivity : AppCompatActivity() {
         mainNavigation.setupWithNavController(navController)
     }
 
-    //
-//    private fun getDataFromState(savedInstanceState: Bundle?) {
-//        savedInstanceState?.apply {
-//            visitedFilmsIds = this.getIntArray(VISITED_FILMS)?.toMutableList() ?: mutableListOf()
-//            favouriteFilmsIds = this.getIntArray(FAVOURITE_FILMS)?.toMutableList()
-//                ?: mutableListOf()
-//        }
-//    }
-//
-//
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putIntArray(VISITED_FILMS, visitedFilmsIds.toIntArray())
-//        outState.putIntArray(FAVOURITE_FILMS, favouriteFilmsIds.toIntArray())
-//    }
-//
     override fun onBackPressed() {
-
-        if (supportFragmentManager.backStackEntryCount > 0) {
+        val navController = navHostFragment.findNavController()
+        if (navController.currentDestination?.parent?.startDestination != navController.currentDestination?.id) {
             super.onBackPressed()
         } else {
             val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)

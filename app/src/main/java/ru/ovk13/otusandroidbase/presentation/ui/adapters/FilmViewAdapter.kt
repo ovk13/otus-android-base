@@ -118,7 +118,7 @@ class FilmViewAdapter(
     private fun bindFilmViewHolder(holder: FilmViewHolder, filmItem: FilmDataModel) {
         holder.bind(
             filmItem.title,
-            filmItem.posterPath,
+            filmItem.getAbsolutePosterPath(),
             filmItem.visited,
             filmItem.inFavourites
         )
@@ -136,7 +136,7 @@ class FilmViewAdapter(
     ) {
         holder.bind(
             filmItem.title,
-            filmItem.posterPath,
+            filmItem.getAbsolutePosterPath(),
             filmItem.visited
         )
         holder.removeFromFavourites.setOnClickListener {

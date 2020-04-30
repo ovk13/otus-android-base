@@ -8,20 +8,26 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import ru.ovk13.otusandroidbase.FilmsApplication
 import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModelFactory
+import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModel
+import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModelFactory
 import ru.ovk13.otusandroidbase.presentation.ui.adapters.FilmViewAdapter
 import ru.ovk13.otusandroidbase.presentation.ui.decorations.LineItemDecoration
 
 abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListener {
 
+    protected var filmsViewModel: FilmsListViewModel? = null
     protected var favouritesViewModel: FavouriteFilmsListViewModel? = null
     protected var recyclerView: RecyclerView? = null
     protected var adapter: FilmViewAdapter? = null
@@ -37,10 +43,31 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        filmsViewModel = ViewModelProvider(
+            activity!!,
+            FilmsListViewModelFactory(
+                FilmsApplication.instance!!.filmsUseCase,
+                FilmsApplication.instance!!.favouritesUseCase,
+                FilmsApplication.instance!!.visitedUseCase
+            )
+        ).get(
+            FilmsListViewModel::class.java
+        )
+
         favouritesViewModel =
-            ViewModelProvider(activity!!, FavouriteFilmsListViewModelFactory()).get(
+            ViewModelProvider(
+                activity!!,
+                FavouriteFilmsListViewModelFactory(
+                    FilmsApplication.instance!!.favouritesUseCase,
+                    FilmsApplication.instance!!.visitedUseCase
+                )
+            ).get(
                 FavouriteFilmsListViewModel::class.java
             )
+
+        if (favouritesViewModel!!.films.value.isNullOrEmpty()) {
+            favouritesViewModel!!.loadFavourites()
+        }
 
         initRecyclerView()
     }
@@ -77,7 +104,6 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
         )
         recyclerView!!.addItemDecoration(decorator)
 
-//        initButtons(listType, view, recyclerView)
     }
 
     protected fun showButton(button: ImageButton) {
@@ -87,20 +113,6 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
     protected fun hideButton(button: ImageButton) {
         button.visibility = View.GONE
     }
-
-//    private fun initInviteButton(button: ImageButton) {
-//        button.setOnClickListener {
-//            val inviteIntent = Intent(Intent.ACTION_SEND)
-//            inviteIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.inviteTitle))
-//            inviteIntent.putExtra(Intent.EXTRA_STREAM, getString(R.string.inviteText))
-//            inviteIntent.type = "text/plain"
-//            val inviteChooser =
-//                Intent.createChooser(inviteIntent, getString(R.string.inviteChooserTitle))
-//            inviteIntent.resolveActivity((activity as AppCompatActivity).packageManager)?.let {
-//                startActivity(inviteChooser)
-//            }
-//        }
-//    }
 
     protected fun showRecyclerLoader() {
         adapter!!.addItem(null)
@@ -119,7 +131,8 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
         adapter!!.notifyItemChanged(position)
 
         showAddToFavouritesSnackBar(View.OnClickListener {
-            favouritesViewModel?.removeFilm(filmItem)
+            val index = MutableLiveData<Int?>()
+            favouritesViewModel?.removeFilm(filmItem, index)
             filmItem.inFavourites = false
             adapter!!.notifyItemChanged(position)
         })
@@ -130,7 +143,24 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
         position: Int,
         type: Int
     ) {
-        val index = favouritesViewModel?.removeFilm(filmItem)
+        val indexLiveData = MutableLiveData<Int?>()
+        favouritesViewModel?.removeFilm(filmItem, indexLiveData)
+        filmsViewModel?.setFavouriteStatus(filmItem.id, false)
+        indexLiveData.observe(this.viewLifecycleOwner, object : Observer<Int?> {
+            override fun onChanged(index: Int?) {
+                showRemoveFromFavouritesSnackBar(View.OnClickListener {
+                    favouritesViewModel?.addFilm(filmItem, index)
+                    filmsViewModel?.setFavouriteStatus(filmItem.id, true)
+                    filmItem.inFavourites = true
+                    if (type == FilmViewAdapter.TYPE_FAVOURITES) {
+                        adapter!!.notifyItemInserted(position)
+                    } else {
+                        adapter!!.notifyItemChanged(position)
+                    }
+                })
+                indexLiveData.removeObserver(this)
+            }
+        })
         filmItem.inFavourites = false
         if (type == FilmViewAdapter.TYPE_FAVOURITES) {
             adapter!!.notifyItemRemoved(position)
@@ -138,15 +168,7 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
             adapter!!.notifyItemChanged(position)
         }
 
-        showRemoveFromFavouritesSnackBar(View.OnClickListener {
-            favouritesViewModel?.addFilm(filmItem, index)
-            filmItem.inFavourites = true
-            if (type == FilmViewAdapter.TYPE_FAVOURITES) {
-                adapter!!.notifyItemInserted(position)
-            } else {
-                adapter!!.notifyItemChanged(position)
-            }
-        })
+
     }
 
     private fun showAddToFavouritesSnackBar(actionClickListener: View.OnClickListener) {

@@ -1,12 +1,65 @@
 package ru.ovk13.otusandroidbase.presentation.favouritefilmslist
 
+import androidx.lifecycle.MutableLiveData
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
-import ru.ovk13.otusandroidbase.data.repository.FavouritesRepository
+import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
+import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.VisitedUseCase
 import ru.ovk13.otusandroidbase.presentation.base.BaseFilmsListViewModel
 
-class FavouriteFilmsListViewModel() : BaseFilmsListViewModel() {
+class FavouriteFilmsListViewModel(
+    private val favouritesUseCase: FavouritesUseCase,
+    private val visitedUseCase: VisitedUseCase
+) : BaseFilmsListViewModel(favouritesUseCase, visitedUseCase) {
+
+    fun loadFavourites() {
+        favouritesUseCase.getFavourites(object : FavouritesUseCase.GetFavouritesCallback {
+            override fun onSuccess(favouritesList: List<FilmDataModel>) {
+                errorLiveData.postValue(null)
+                val filmsList = favouritesList.toMutableList()
+                visitedUseCase.getVisitedIds(object : VisitedUseCase.GetVisitedCallback {
+                    override fun onSuccess(visitedIds: List<Int>) {
+                        filmsList.map {
+                            it.visited = visitedIds.contains(it.id)
+                        }
+
+                        filmsLiveData.postValue(filmsList)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        setError(e)
+                    }
+                })
+            }
+
+            override fun onError(e: Throwable) {
+                errorLiveData.postValue(
+                    LoadingErrorModel(
+                        e.message ?: "",
+                        LoadingErrorModel.FULL_RELOAD
+                    )
+                )
+            }
+
+        })
+    }
 
     fun addFilm(film: FilmDataModel, index: Int? = null) {
+
+        favouritesUseCase.addFavourite(film, object : FavouritesUseCase.AddFavouritesCallback {
+            override fun onSuccess(film: FilmDataModel) {}
+
+            override fun onError(e: Throwable) {
+                errorLiveData.postValue(
+                    LoadingErrorModel(
+                        e.message ?: "",
+                        LoadingErrorModel.FULL_RELOAD
+                    )
+                )
+            }
+
+        })
+
         val currentFilmsList = filmsLiveData.value ?: mutableListOf()
         if (index == null) {
             currentFilmsList.add(film)
@@ -14,18 +67,27 @@ class FavouriteFilmsListViewModel() : BaseFilmsListViewModel() {
             currentFilmsList.add(index, film)
         }
         filmsLiveData.postValue(currentFilmsList)
-
-        FavouritesRepository.addFavourite(film.id)
     }
 
-    fun removeFilm(film: FilmDataModel): Int? {
-        val index = removeFilmById(film.id)
+    fun removeFilm(film: FilmDataModel, index: MutableLiveData<Int?>) {
 
-        if (FavouritesRepository.isInFavourites(film.id)) {
-            FavouritesRepository.removeFavourite(film.id)
-        }
+        favouritesUseCase.removeFavourite(
+            film.id,
+            object : FavouritesUseCase.RemoveFavouritesCallback {
+                override fun onSuccess() {
+                    index.postValue(removeFilmById(film.id))
+                }
 
-        return index
+                override fun onError(e: Throwable) {
+                    errorLiveData.postValue(
+                        LoadingErrorModel(
+                            e.message ?: "",
+                            LoadingErrorModel.FULL_RELOAD
+                        )
+                    )
+                }
+
+            })
     }
 
     private fun removeFilmById(id: Int): Int? {
@@ -39,5 +101,12 @@ class FavouriteFilmsListViewModel() : BaseFilmsListViewModel() {
         }
 
         return null
+    }
+
+    fun isInFavourites(id: Int): Boolean {
+        if (filmsLiveData.value === null) {
+            return false
+        }
+        return filmsLiveData.value!!.any { it.id == id }
     }
 }
