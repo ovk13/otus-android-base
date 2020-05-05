@@ -4,13 +4,17 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity(
     tableName = "films",
-    primaryKeys = ["id", "type"]
+    primaryKeys = ["id", "type"],
+    indices = [
+        Index("type")
+    ]
 )
 data class FilmDataModel(
     @ColumnInfo(name = "type")
@@ -70,5 +74,6 @@ data class FilmDataModel(
         const val IN_FAVOURITES = "inFavourites"
         const val TYPE_FILM = "film"
         const val TYPE_FAVOURITE = "favourite"
+        const val TYPE_TO_SEE = "to_see"
     }
 }

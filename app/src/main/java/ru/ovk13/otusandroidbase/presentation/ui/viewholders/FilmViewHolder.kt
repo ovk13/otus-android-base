@@ -16,6 +16,7 @@ class FilmViewHolder(itemView: View) :
     private val titleView: TextView = itemView.findViewById(R.id.title)
     val toggleFavourites: ImageView = itemView.findViewById(R.id.toggleFavourites)
     private val removeFromFavourites: ImageView = itemView.findViewById(R.id.removeFromFavourites)
+    val editSchedule: ImageView = itemView.findViewById(R.id.editSchedule)
     val detailsBtn: Button = itemView.findViewById(R.id.detailsBtn)
 
     fun bind(

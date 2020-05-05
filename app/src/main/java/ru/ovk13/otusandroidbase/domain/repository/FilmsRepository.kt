@@ -9,4 +9,5 @@ interface FilmsRepository {
     fun getFilmsListFromDb(page: Int): MutableList<FilmDataModel>
     fun writeFilmsListToDb(filmsList: List<FilmDataModel>)
     fun clearDb()
+    fun getFilmById(id: Int): FilmDataModel
 }

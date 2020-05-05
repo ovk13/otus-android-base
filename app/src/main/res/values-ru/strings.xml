@@ -24,4 +24,8 @@
     <string name="loadFailedText">Не удалось загрузить фильмы</string>
     <string name="loadPageFailedText">Не удалось загрузить страницу</string>
     <string name="reloadBtn">Попробовать еще раз</string>
+    <string name="scheduleFormTitle">Просмотр по расписанию</string>
+    <string name="remove">Удалить</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
 </resources>

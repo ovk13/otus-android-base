@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +22,10 @@ import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModelFactory
+import ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment
 import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModel
 import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModelFactory
+import ru.ovk13.otusandroidbase.presentation.scheduleEditor.ScheduleEditorFragment
 import ru.ovk13.otusandroidbase.presentation.ui.adapters.FilmViewAdapter
 import ru.ovk13.otusandroidbase.presentation.ui.decorations.LineItemDecoration
 
@@ -192,6 +196,19 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
                 )
             )
             .show()
+    }
+
+    override fun onEditScheduleClick(filmItem: FilmDataModel, position: Int) {
+        val id = filmItem.id
+        val bundle = bundleOf(ScheduleEditorFragment.ID to id)
+        findNavController().navigate(R.id.action_open_scheduleEditorFragment, bundle)
+    }
+
+    override fun onDetailsClick(filmItem: FilmDataModel, position: Int) {
+        // todo: передавать id и дергать фильм из room
+        val bundle = bundleOf(FilmDetailFragment.FILM_ITEM to filmItem)
+        filmsViewModel!!.addVisited(filmItem.id)
+        findNavController().navigate(R.id.action_open_filmDetailFragment, bundle)
     }
 
     companion object {

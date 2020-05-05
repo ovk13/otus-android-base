@@ -30,4 +30,8 @@
     <string name="loadFailedText">Failed to load movies</string>
     <string name="loadPageFailedText">Failed to load page</string>
     <string name="reloadBtn">Try again</string>
+    <string name="scheduleFormTitle">Watch on schedule</string>
+    <string name="remove">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

@@ -1,53 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/cover"
-        style="@style/Film.Image"
-        android:src="@drawable/film1"
-        app:layout_constraintEnd_toStartOf="@id/title"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/cover"
+            style="@style/Film.Image"
+            android:src="@drawable/film1"
+            app:layout_constraintEnd_toStartOf="@id/title"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/title"
-        style="@style/Film.Title"
-        android:layout_marginEnd="50dp"
-        android:text="@string/film1Name"
-        app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintStart_toEndOf="@id/cover"
-        app:layout_constraintTop_toTopOf="@id/cover" />
+            android:id="@+id/title"
+            style="@style/Film.Title"
+            android:layout_marginEnd="50dp"
+            android:text="@string/film1Name"
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintStart_toEndOf="@id/cover"
+            app:layout_constraintTop_toTopOf="@id/cover" />
 
-    <ImageView
-        android:id="@+id/toggleFavourites"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="13dp"
-        android:src="@drawable/ic_heart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="13dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/removeFromFavourites"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="13dp"
-        android:src="@drawable/ic_delete"
-        android:tint="@color/deleteIcon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+                android:id="@+id/toggleFavourites"
+                style="@style/Film.IconButton"
+                android:src="@drawable/ic_heart" />
+
+        <ImageView
+                android:id="@+id/removeFromFavourites"
+                style="@style/Film.IconButton"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/deleteIcon" />
+
+        <ImageView
+                android:id="@+id/editSchedule"
+                style="@style/Film.IconButton"
+                android:src="@drawable/ic_alarm_add"
+                android:tint="@color/deleteIcon" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/detailsBtn"
-        style="@style/Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/details"
-        app:layout_constraintStart_toStartOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+            android:id="@+id/detailsBtn"
+            style="@style/Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/details"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,6 +66,12 @@
         <item name="layout_constraintEnd_toEndOf">parent</item>
     </style>
 
+    <style name="Film.IconButton">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
     <style name="Film.Title.Detail">
         <item name="android:textSize">26sp</item>
     </style>
@@ -86,4 +92,27 @@
         <item name="android:tint">@color/fabIconColor</item>
     </style>
 
+    <style name="Schedule"></style>
+
+    <style name="Schedule.Form"></style>
+
+    <style name="Schedule.Form.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingTop">@dimen/standardPadding</item>
+        <item name="android:paddingBottom">@dimen/doubleStandardPadding</item>
+    </style>
+
+    <style name="Schedule.Form.Button">
+        <item name="android:layout_width">110dp</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="android:drawablePadding">3dp</item>
+        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="layout_constraintHorizontal_chainStyle">packed</item>
+    </style>
 </resources>
