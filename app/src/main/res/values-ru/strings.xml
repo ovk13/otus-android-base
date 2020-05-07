@@ -28,4 +28,6 @@
     <string name="remove">Удалить</string>
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
+    <string name="scheduleNotificationTitle">Просомтр по расписанию:</string>
+    <string name="scheduleNotificationText">Вы запланировали просмотр фильма</string>
 </resources>

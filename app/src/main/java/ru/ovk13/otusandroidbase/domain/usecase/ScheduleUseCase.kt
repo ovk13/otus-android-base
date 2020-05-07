@@ -1,13 +1,17 @@
 package ru.ovk13.otusandroidbase.domain.usecase
 
+import ru.ovk13.otusandroidbase.FilmsApplication
+import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.FilmScheduleModel
+import ru.ovk13.otusandroidbase.domain.notification.NotificationScheduler
 import ru.ovk13.otusandroidbase.domain.repository.ScheduleRepository
 import java.util.*
 import java.util.concurrent.Executors
 
 class ScheduleUseCase(
-    private val scheduleRepository: ScheduleRepository
+    private val scheduleRepository: ScheduleRepository,
+    private val notificationScheduler: NotificationScheduler
 ) {
     fun getFilmSchedule(id: Int, callback: GetFilmScheduleCallback) {
         Executors.newSingleThreadExecutor().execute(Runnable {
@@ -29,6 +33,13 @@ class ScheduleUseCase(
             try {
                 val filmSchedule = FilmScheduleModel(film.id, watchDate.timeInMillis)
                 scheduleRepository.setFilmSchedule(filmSchedule)
+                notificationScheduler.scheduleNotification(
+                    notificationScheduler.getNotification(
+                        FilmsApplication.instance!!.getString(R.string.scheduleNotificationTitle) + " " + film.title,
+                        FilmsApplication.instance!!.getString(R.string.scheduleNotificationText) + " " + film.title
+                    ),
+                    watchDate.timeInMillis
+                )
                 callback.onSuccess()
             } catch (e: Throwable) {
                 callback.onError(e)

@@ -34,4 +34,6 @@
     <string name="remove">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="scheduleNotificationTitle">Scheduled view:</string>
+    <string name="scheduleNotificationText">You have planned to watch the movie</string>
 </resources>

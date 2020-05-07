@@ -32,6 +32,7 @@ class ScheduleEditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        scheduleDatePicker.minDate = System.currentTimeMillis()
         scheduleTimePicker.setIs24HourView(true)
 
         scheduleEditorViewModel = ViewModelProvider(
@@ -93,7 +94,7 @@ class ScheduleEditorFragment : Fragment() {
             watchDate.get(Calendar.MONTH),
             watchDate.get(Calendar.DAY_OF_MONTH)
         )
-        if (Build.VERSION.SDK_INT < 23) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             scheduleTimePicker.currentHour = watchDate.get(Calendar.HOUR_OF_DAY)
             scheduleTimePicker.currentMinute = watchDate.get(Calendar.MINUTE)
         } else {
@@ -111,16 +112,18 @@ class ScheduleEditorFragment : Fragment() {
         cancelEditSchedule.setOnClickListener {
             scheduleEditorViewModel!!.setScheduleEditorClosed()
         }
+
         removeFromSchedule.setOnClickListener {
 
             findNavController().popBackStack()
         }
+
         submitEditSchedule.setOnClickListener {
 
             try {
                 val hour: Int
                 val minute: Int
-                if (Build.VERSION.SDK_INT < 23) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     hour = scheduleTimePicker.currentHour
                     minute = scheduleTimePicker.currentMinute
                 } else {

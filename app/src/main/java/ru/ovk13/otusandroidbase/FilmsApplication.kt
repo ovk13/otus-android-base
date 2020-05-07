@@ -1,5 +1,6 @@
 package ru.ovk13.otusandroidbase
 
+import android.app.AlarmManager
 import android.app.Application
 import android.content.Context
 import okhttp3.OkHttpClient
@@ -13,6 +14,7 @@ import ru.ovk13.otusandroidbase.data.repository.ScheduleRepositoryImpl
 import ru.ovk13.otusandroidbase.data.repository.VisitedRepositoryImpl
 import ru.ovk13.otusandroidbase.data.retrofit.service.FilmsRetrofitService
 import ru.ovk13.otusandroidbase.domain.CacheValidator
+import ru.ovk13.otusandroidbase.domain.notification.NotificationScheduler
 import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.FilmsUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.ScheduleUseCase
@@ -27,12 +29,14 @@ class FilmsApplication : Application() {
     lateinit var favouritesUseCase: FavouritesUseCase
     lateinit var visitedUseCase: VisitedUseCase
     lateinit var scheduleUseCase: ScheduleUseCase
+    lateinit var notificationScheduler: NotificationScheduler
 
     override fun onCreate() {
         super.onCreate()
 
         instance = this
         initRetrofit()
+        initNotificationScheduler()
         initUseCases()
     }
 
@@ -71,7 +75,14 @@ class FilmsApplication : Application() {
         )
         favouritesUseCase = FavouritesUseCase(FavouritesRepositoryImpl(favouritesDao))
         visitedUseCase = VisitedUseCase(VisitedRepositoryImpl(visitedDao))
-        scheduleUseCase = ScheduleUseCase(ScheduleRepositoryImpl(scheduleDao))
+        scheduleUseCase =
+            ScheduleUseCase(ScheduleRepositoryImpl(scheduleDao), notificationScheduler)
+    }
+
+    private fun initNotificationScheduler() {
+        notificationScheduler =
+            NotificationScheduler(this, getSystemService(Context.ALARM_SERVICE) as AlarmManager)
+        notificationScheduler.createChannel()
     }
 
     companion object {
