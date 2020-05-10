@@ -4,10 +4,12 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ovk13.otusandroidbase.R
+import ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +18,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupBottomNavigation()
+
+        if (intent.hasExtra(OPEN_FILM_DETAIL) && intent.getBooleanExtra(OPEN_FILM_DETAIL, false)) {
+            val filmId = intent.getIntExtra(FilmDetailFragment.ID, 0)
+            if (filmId > 0) {
+                val bundle = bundleOf(FilmDetailFragment.ID to filmId)
+                navHostFragment.findNavController()
+                    .navigate(R.id.action_global_filmDetailFragment, bundle)
+            }
+        }
 
     }
 
@@ -41,5 +52,9 @@ class MainActivity : AppCompatActivity() {
             val dialog: AlertDialog = dialogBuilder.create()
             dialog.show()
         }
+    }
+
+    companion object {
+        const val OPEN_FILM_DETAIL = "open_film_detail"
     }
 }

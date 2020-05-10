@@ -38,6 +38,7 @@ class ScheduleUseCase(
                         FilmsApplication.instance!!.getString(R.string.scheduleNotificationTitle) + " " + film.title,
                         FilmsApplication.instance!!.getString(R.string.scheduleNotificationText) + " " + film.title
                     ),
+                    film.id,
                     watchDate.timeInMillis
                 )
                 callback.onSuccess()

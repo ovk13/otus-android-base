@@ -13,9 +13,10 @@ class NotificationScheduler(
     private val alarmManager: AlarmManager
 ) : ContextWrapper(base) {
 
-    fun scheduleNotification(notification: Notification, publishDateTime: Long) {
+    fun scheduleNotification(notification: Notification, id: Int, publishDateTime: Long) {
         val notificationIntent = Intent(this, NotificationPublisher::class.java)
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1)
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, id)
+        notificationIntent.putExtra(NotificationPublisher.FILM_ID, id)
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification)
 
         val pendingIntent = PendingIntent.getBroadcast(

@@ -31,4 +31,7 @@
                 android:name="id"
                 app:argType="integer" />
     </fragment>
+    <action
+            android:id="@+id/action_global_filmDetailFragment"
+            app:destination="@id/filmDetailFragment" />
 </navigation>

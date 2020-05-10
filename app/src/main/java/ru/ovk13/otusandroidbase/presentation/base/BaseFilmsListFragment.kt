@@ -206,7 +206,7 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
 
     override fun onDetailsClick(filmItem: FilmDataModel, position: Int) {
         // todo: передавать id и дергать фильм из room
-        val bundle = bundleOf(FilmDetailFragment.FILM_ITEM to filmItem)
+        val bundle = bundleOf(FilmDetailFragment.ID to filmItem.id)
         filmsViewModel!!.addVisited(filmItem.id)
         findNavController().navigate(R.id.action_open_filmDetailFragment, bundle)
     }
