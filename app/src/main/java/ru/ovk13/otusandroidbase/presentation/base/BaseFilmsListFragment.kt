@@ -52,7 +52,8 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
             FilmsListViewModelFactory(
                 FilmsApplication.instance!!.filmsUseCase,
                 FilmsApplication.instance!!.favouritesUseCase,
-                FilmsApplication.instance!!.visitedUseCase
+                FilmsApplication.instance!!.visitedUseCase,
+                FilmsApplication.instance!!.scheduleUseCase
             )
         ).get(
             FilmsListViewModel::class.java
@@ -63,7 +64,8 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
                 activity!!,
                 FavouriteFilmsListViewModelFactory(
                     FilmsApplication.instance!!.favouritesUseCase,
-                    FilmsApplication.instance!!.visitedUseCase
+                    FilmsApplication.instance!!.visitedUseCase,
+                    FilmsApplication.instance!!.scheduleUseCase
                 )
             ).get(
                 FavouriteFilmsListViewModel::class.java

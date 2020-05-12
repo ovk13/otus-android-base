@@ -16,8 +16,18 @@ class ScheduleUseCase(
     fun getFilmSchedule(id: Int, callback: GetFilmScheduleCallback) {
         Executors.newSingleThreadExecutor().execute(Runnable {
             try {
-                val filmSchedule = scheduleRepository.getFilmSchedule(id)
-                callback.onSuccess(filmSchedule)
+                removePastSchedule(object : RemoveFilmScheduleCallback {
+                    override fun onSuccess() {
+                        val filmSchedule = scheduleRepository.getFilmSchedule(id)
+                        callback.onSuccess(filmSchedule)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        throw e
+                    }
+
+                })
+
             } catch (e: Throwable) {
                 callback.onError(e)
             }
@@ -48,12 +58,61 @@ class ScheduleUseCase(
         })
     }
 
+    fun removeFilmSchedule(film: FilmDataModel, callback: RemoveFilmScheduleCallback) {
+        Executors.newSingleThreadExecutor().execute(Runnable {
+            try {
+                scheduleRepository.removeFilmSchedule(film.id)
+                callback.onSuccess()
+            } catch (e: Throwable) {
+                callback.onError(e)
+            }
+        })
+    }
+
+    fun getFutureScheduledFilmsIds(callback: GetScheduledFilmsIdsCallback) {
+        try {
+            removePastSchedule(object : RemoveFilmScheduleCallback {
+                override fun onSuccess() {
+                    val calendar = Calendar.getInstance()
+                    callback.onSuccess(scheduleRepository.getFutureSchedule(calendar.timeInMillis))
+                }
+
+                override fun onError(e: Throwable) {
+                    throw e
+                }
+            })
+
+        } catch (e: Throwable) {
+            callback.onError(e)
+        }
+    }
+
+    private fun removePastSchedule(callback: RemoveFilmScheduleCallback) {
+        try {
+            val calendar = Calendar.getInstance()
+            scheduleRepository.removePastSchedule(calendar.timeInMillis)
+            callback.onSuccess()
+        } catch (e: Throwable) {
+            callback.onError(e)
+        }
+    }
+
+    interface GetScheduledFilmsIdsCallback {
+        fun onSuccess(scheduledFilmsIds: List<Int>)
+        fun onError(e: Throwable)
+    }
+
     interface GetFilmScheduleCallback {
         fun onSuccess(filmSchedule: FilmScheduleModel?)
         fun onError(e: Throwable)
     }
 
     interface AddFilmScheduleCallback {
+        fun onSuccess()
+        fun onError(e: Throwable)
+    }
+
+    interface RemoveFilmScheduleCallback {
         fun onSuccess()
         fun onError(e: Throwable)
     }

@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
 import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.ScheduleUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.VisitedUseCase
 
 abstract class BaseFilmsListViewModel(
     private val favouritesUseCase: FavouritesUseCase,
-    private val visitedUseCase: VisitedUseCase
+    private val visitedUseCase: VisitedUseCase,
+    private val scheduleUseCase: ScheduleUseCase
 ) : ViewModel() {
     protected val filmsLiveData = MutableLiveData<MutableList<FilmDataModel>>()
     protected val errorLiveData = MutableLiveData<LoadingErrorModel?>()
@@ -47,5 +49,11 @@ abstract class BaseFilmsListViewModel(
 
     fun clearError() {
         errorLiveData.value = null
+    }
+
+    fun setScheduledStatus(id: Int, scheduled: Boolean) {
+        val filmsList = filmsLiveData.value
+        filmsList?.find { it.id == id }?.scheduled = scheduled
+        filmsLiveData.postValue(filmsList)
     }
 }

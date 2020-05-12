@@ -14,11 +14,17 @@ class ScheduleEditorViewModel(
     private val scheduleUseCase: ScheduleUseCase
 ) : ViewModel() {
 
+    private val setActionInProcessLiveData = MutableLiveData<Boolean>()
+    private val removeActionInProcessLiveData = MutableLiveData<Boolean>()
     private val scheduleEditorOpenedLiveData = MutableLiveData<Boolean>()
     private val filmLiveData = MutableLiveData<FilmDataModel>()
     private val filmScheduleLiveData = MutableLiveData<FilmScheduleModel>()
     private val errorLiveData = MutableLiveData<String>()
 
+    val setActionInProcess: LiveData<Boolean>
+        get() = setActionInProcessLiveData
+    val removeActionInProcess: LiveData<Boolean>
+        get() = removeActionInProcessLiveData
     val film: LiveData<FilmDataModel>
         get() = filmLiveData
     val filmSchedule: LiveData<FilmScheduleModel>
@@ -27,6 +33,22 @@ class ScheduleEditorViewModel(
         get() = errorLiveData
     val scheduleEditorOpened: LiveData<Boolean>
         get() = scheduleEditorOpenedLiveData
+
+    fun startSetAction() {
+        setActionInProcessLiveData.postValue(true)
+    }
+
+    fun stopSetAction() {
+        setActionInProcessLiveData.postValue(false)
+    }
+
+    fun startRemoveAction() {
+        removeActionInProcessLiveData.postValue(true)
+    }
+
+    fun stopRemoveAction() {
+        removeActionInProcessLiveData.postValue(false)
+    }
 
     fun setScheduleEditorOpened() {
         scheduleEditorOpenedLiveData.postValue(true)
@@ -59,6 +81,7 @@ class ScheduleEditorViewModel(
             watchDate,
             object : ScheduleUseCase.AddFilmScheduleCallback {
                 override fun onSuccess() {
+                    stopSetAction()
                     setScheduleEditorClosed()
                 }
 
@@ -67,6 +90,23 @@ class ScheduleEditorViewModel(
                 }
 
             })
+    }
+
+    fun removeFilmSchedule() {
+        scheduleUseCase.removeFilmSchedule(
+            film.value!!,
+            object : ScheduleUseCase.RemoveFilmScheduleCallback {
+                override fun onSuccess() {
+                    stopRemoveAction()
+                    setScheduleEditorClosed()
+                }
+
+                override fun onError(e: Throwable) {
+                    errorLiveData.postValue(e.message)
+                }
+
+            }
+        )
     }
 
     fun clearError() {

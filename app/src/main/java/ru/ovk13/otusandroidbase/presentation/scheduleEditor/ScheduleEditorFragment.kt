@@ -15,12 +15,18 @@ import ru.ovk13.otusandroidbase.FilmsApplication
 import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.FilmScheduleModel
+import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModel
+import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModelFactory
+import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModel
+import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModelFactory
 import java.util.*
 
 class ScheduleEditorFragment : Fragment() {
 
     private var editorIsOpened = false
     private var scheduleEditorViewModel: ScheduleEditorViewModel? = null
+    private var filmsViewModel: FilmsListViewModel? = null
+    private var favouritesViewModel: FavouriteFilmsListViewModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +41,30 @@ class ScheduleEditorFragment : Fragment() {
         scheduleDatePicker.minDate = System.currentTimeMillis()
         scheduleTimePicker.setIs24HourView(true)
 
+        filmsViewModel = ViewModelProvider(
+            activity!!,
+            FilmsListViewModelFactory(
+                FilmsApplication.instance!!.filmsUseCase,
+                FilmsApplication.instance!!.favouritesUseCase,
+                FilmsApplication.instance!!.visitedUseCase,
+                FilmsApplication.instance!!.scheduleUseCase
+            )
+        ).get(
+            FilmsListViewModel::class.java
+        )
+
+        favouritesViewModel =
+            ViewModelProvider(
+                activity!!,
+                FavouriteFilmsListViewModelFactory(
+                    FilmsApplication.instance!!.favouritesUseCase,
+                    FilmsApplication.instance!!.visitedUseCase,
+                    FilmsApplication.instance!!.scheduleUseCase
+                )
+            ).get(
+                FavouriteFilmsListViewModel::class.java
+            )
+
         scheduleEditorViewModel = ViewModelProvider(
             activity!!,
             ScheduleEditorViewModelFactory(
@@ -44,6 +74,7 @@ class ScheduleEditorFragment : Fragment() {
         ).get(
             ScheduleEditorViewModel::class.java
         )
+
 
         scheduleEditorViewModel!!.setScheduleEditorOpened()
         scheduleEditorViewModel!!.scheduleEditorOpened.observe(
@@ -84,6 +115,24 @@ class ScheduleEditorFragment : Fragment() {
                     scheduleEditorViewModel!!.film.removeObserver(this)
                 }
             })
+        scheduleEditorViewModel!!.setActionInProcess.observe(this.viewLifecycleOwner, Observer {
+            if (!it) {
+                val film = scheduleEditorViewModel!!.film.value
+                if (film != null) {
+                    filmsViewModel!!.setScheduledStatus(film.id, true)
+                    favouritesViewModel!!.setScheduledStatus(film.id, true)
+                }
+            }
+        })
+        scheduleEditorViewModel!!.removeActionInProcess.observe(this.viewLifecycleOwner, Observer {
+            if (!it) {
+                val film = scheduleEditorViewModel!!.film.value
+                if (film != null) {
+                    filmsViewModel!!.setScheduledStatus(film.id, false)
+                    favouritesViewModel!!.setScheduledStatus(film.id, false)
+                }
+            }
+        })
     }
 
     private fun setDateTime(schedule: FilmScheduleModel) {
@@ -114,33 +163,29 @@ class ScheduleEditorFragment : Fragment() {
         }
 
         removeFromSchedule.setOnClickListener {
-
-            findNavController().popBackStack()
+            scheduleEditorViewModel!!.startRemoveAction()
+            scheduleEditorViewModel!!.removeFilmSchedule()
         }
 
         submitEditSchedule.setOnClickListener {
-
-            try {
-                val hour: Int
-                val minute: Int
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    hour = scheduleTimePicker.currentHour
-                    minute = scheduleTimePicker.currentMinute
-                } else {
-                    hour = scheduleTimePicker.hour
-                    minute = scheduleTimePicker.minute
-                }
-
-                scheduleEditorViewModel!!.setFilmSchedule(
-                    scheduleDatePicker.year,
-                    scheduleDatePicker.month,
-                    scheduleDatePicker.dayOfMonth,
-                    hour,
-                    minute
-                )
-            } catch (e: Throwable) {
-
+            scheduleEditorViewModel!!.startSetAction()
+            val hour: Int
+            val minute: Int
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                hour = scheduleTimePicker.currentHour
+                minute = scheduleTimePicker.currentMinute
+            } else {
+                hour = scheduleTimePicker.hour
+                minute = scheduleTimePicker.minute
             }
+
+            scheduleEditorViewModel!!.setFilmSchedule(
+                scheduleDatePicker.year,
+                scheduleDatePicker.month,
+                scheduleDatePicker.dayOfMonth,
+                hour,
+                minute
+            )
         }
     }
 

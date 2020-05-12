@@ -14,6 +14,12 @@ interface ScheduleDao {
     @Query("SELECT * FROM schedule WHERE film_id = :id")
     fun getFilmSchedule(id: Int): FilmScheduleModel?
 
-    @Query("SELECT * FROM schedule")
-    fun getFullSchedule(): List<FilmScheduleModel>
+    @Query("SELECT film_id FROM schedule WHERE watch_timestamp > :time")
+    fun getFutureSchedule(time: Long): List<Int>
+
+    @Query("DELETE FROM schedule WHERE watch_timestamp < :time")
+    fun removePastSchedule(time: Long)
+
+    @Query("DELETE FROM schedule WHERE film_id = :id")
+    fun removeFilmSchedule(id: Int)
 }

@@ -7,11 +7,15 @@ import ru.ovk13.otusandroidbase.domain.repository.ScheduleRepository
 class ScheduleRepositoryImpl(
     private val scheduleDao: ScheduleDao
 ) : ScheduleRepository {
-    override fun getFullSchedule(): List<FilmScheduleModel> = scheduleDao.getFullSchedule()
+    override fun getFutureSchedule(time: Long): List<Int> = scheduleDao.getFutureSchedule(time)
+
+    override fun removePastSchedule(time: Long) = scheduleDao.removePastSchedule(time)
 
     override fun getFilmSchedule(id: Int): FilmScheduleModel? = scheduleDao.getFilmSchedule(id)
 
     override fun setFilmSchedule(filmSchedule: FilmScheduleModel) {
         scheduleDao.addFilmSchedule(filmSchedule)
     }
+
+    override fun removeFilmSchedule(id: Int) = scheduleDao.removeFilmSchedule(id)
 }

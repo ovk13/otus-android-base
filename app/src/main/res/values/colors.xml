@@ -10,7 +10,7 @@
     <color name="visited">#666</color>
     <color name="buttonBg">@color/colorPrimary</color>
     <color name="buttonTextColor">#fff</color>
-    <color name="inFavourites">#5B546F</color>
+    <color name="filmActionIcon">#454051</color>
     <color name="headerBg">#968FAA</color>
     <color name="deleteIcon">#333</color>
     <color name="filmDecorator">#968FAA</color>

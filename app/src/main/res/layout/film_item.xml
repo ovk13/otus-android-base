@@ -36,14 +36,12 @@
         <ImageView
                 android:id="@+id/removeFromFavourites"
                 style="@style/Film.IconButton"
-                android:src="@drawable/ic_delete"
-                android:tint="@color/deleteIcon" />
+                android:src="@drawable/ic_delete" />
 
         <ImageView
                 android:id="@+id/editSchedule"
                 style="@style/Film.IconButton"
-                android:src="@drawable/ic_alarm_add"
-                android:tint="@color/deleteIcon" />
+                android:src="@drawable/ic_alarm_add" />
     </LinearLayout>
 
     <Button

@@ -61,9 +61,11 @@ data class FilmDataModel(
 ) : Parcelable {
     @Ignore
     var visited: Boolean = false
-
     @Ignore
     var inFavourites: Boolean = false
+
+    @Ignore
+    var scheduled: Boolean = false
 
     fun getAbsolutePosterPath(): String {
         return "https://image.tmdb.org/t/p/w500" + posterPath

@@ -19,7 +19,7 @@
     </style>
 
     <style name="Header">
-        <item name="android:background">@color/headerBg</item>
+        <item name="android:background">@color/colorPrimary</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">26sp</item>
         <item name="android:paddingStart">@dimen/standardPadding</item>
@@ -70,6 +70,7 @@
         <item name="android:layout_width">32dp</item>
         <item name="android:layout_height">32dp</item>
         <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:tint">@color/filmActionIcon</item>
     </style>
 
     <style name="Film.Title.Detail">
@@ -104,7 +105,7 @@
 
     <style name="Schedule.Form.Button">
         <item name="android:layout_width">110dp</item>
-        <item name="android:background">@color/colorAccent</item>
+        <item name="android:background">@color/colorPrimary</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/buttonTextColor</item>
         <item name="android:drawablePadding">3dp</item>
