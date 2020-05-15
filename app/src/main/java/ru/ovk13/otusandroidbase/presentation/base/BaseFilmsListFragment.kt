@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -198,6 +199,12 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
                 )
             )
             .show()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        (activity as AppCompatActivity).supportActionBar?.show()
+
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onEditScheduleClick(filmItem: FilmDataModel, position: Int) {

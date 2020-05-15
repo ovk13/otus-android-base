@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_film_detail.*
 import ru.ovk13.otusandroidbase.FilmsApplication
 import ru.ovk13.otusandroidbase.R
 
@@ -36,8 +36,7 @@ class FilmDetailFragment : Fragment() {
         ).get(FilmDetailViewModel::class.java)
 
         filmDetailViewModel.detailFilm.observe(this.viewLifecycleOwner, Observer { film ->
-            val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-            toolbar.title = film.title
+            detailToolbar.title = film.title
             view.findViewById<TextView>(R.id.filmDescription).text = film.overview
 
             val coverView = view.findViewById<ImageView>(R.id.filmCover)

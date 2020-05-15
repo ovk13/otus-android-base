@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setSupportActionBar(toolbar)
+
         setupBottomNavigation()
 
         if (intent.hasExtra(OPEN_FILM_DETAIL) && intent.getBooleanExtra(OPEN_FILM_DETAIL, false)) {

@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_schedule_editor.*
 import ru.ovk13.otusandroidbase.FilmsApplication
 import ru.ovk13.otusandroidbase.R
-import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.FilmScheduleModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModelFactory
@@ -98,6 +99,7 @@ class ScheduleEditorFragment : Fragment() {
         if (filmId != null) {
             scheduleEditorViewModel!!.getFilmData(filmId)
             scheduleEditorViewModel!!.getFilmSchedule(filmId)
+            initButtons()
         }
         scheduleEditorViewModel!!.filmSchedule.observe(
             this.viewLifecycleOwner,
@@ -106,15 +108,9 @@ class ScheduleEditorFragment : Fragment() {
                     setDateTime(schedule)
                 }
             })
-        scheduleEditorViewModel!!.film.observe(
-            this.viewLifecycleOwner,
-            object : Observer<FilmDataModel> {
-                override fun onChanged(film: FilmDataModel) {
-                    initButtons()
-                    scheduleFilmTitle.text = film.title
-                    scheduleEditorViewModel!!.film.removeObserver(this)
-                }
-            })
+        scheduleEditorViewModel!!.film.observe(this.viewLifecycleOwner, Observer { film ->
+            scheduleFilmTitle.text = film.title
+        })
         scheduleEditorViewModel!!.setActionInProcess.observe(this.viewLifecycleOwner, Observer {
             if (!it) {
                 val film = scheduleEditorViewModel!!.film.value
@@ -187,6 +183,14 @@ class ScheduleEditorFragment : Fragment() {
                 minute
             )
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        (activity as AppCompatActivity).supportActionBar?.show()
+        (activity as AppCompatActivity).findViewById<Toolbar>(R.id.toolbar).title =
+            resources.getString(R.string.scheduleFormTitle)
+
+        super.onActivityCreated(savedInstanceState)
     }
 
     companion object {
