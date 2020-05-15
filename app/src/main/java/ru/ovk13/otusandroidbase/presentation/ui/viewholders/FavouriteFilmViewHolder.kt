@@ -27,14 +27,12 @@ class FavouriteFilmViewHolder(itemView: View) :
         removeFromFavourites.visibility = View.VISIBLE
 
         titleView.text = title
-        if (visited) {
-            titleView.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    R.color.visited
-                )
+        titleView.setTextColor(
+            ContextCompat.getColor(
+                itemView.context,
+                if (visited) R.color.visited else R.color.title
             )
-        }
+        )
 
         Glide.with(coverView.context)
             .load(posterPath)

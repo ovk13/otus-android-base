@@ -9,18 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_films_list.*
 import kotlinx.android.synthetic.main.fragment_films_list.view.*
-import ru.ovk13.otusandroidbase.FilmsApplication
 import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
-import ru.ovk13.otusandroidbase.data.repository.FavouritesRepository
 import ru.ovk13.otusandroidbase.presentation.base.BaseFilmsListFragment
 import ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment.Companion.FILM_ITEM
 import ru.ovk13.otusandroidbase.presentation.ui.adapters.FilmViewAdapter
@@ -28,25 +25,18 @@ import ru.ovk13.otusandroidbase.presentation.ui.adapters.FilmViewAdapter
 class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListener {
 
     private var isLoading: Boolean = false
-    private var viewModel: FilmsListViewModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(
-            activity!!,
-            FilmsListViewModelFactory(FilmsApplication.instance!!.getFilmsListUseCase)
-        ).get(
-            FilmsListViewModel::class.java
-        )
-        viewModel!!.films.observe(this.viewLifecycleOwner, Observer { films ->
+        filmsViewModel!!.films.observe(this.viewLifecycleOwner, Observer { films ->
             hideRecyclerLoader()
             loadFailedWrapper.visibility = View.GONE
-            adapter!!.setItems(films) {
+            adapter!!.setItems(films.toMutableList()) {
                 isLoading = false
             }
         })
-        viewModel!!.error.observe(this.viewLifecycleOwner, Observer { error ->
+        filmsViewModel!!.error.observe(this.viewLifecycleOwner, Observer { error ->
 
             if (error != null) {
                 isLoading = false
@@ -57,14 +47,14 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
                         .show()
                 } else if (error.type == LoadingErrorModel.LOAD_PAGE) {
                     Snackbar.make(
-                            view.findViewById(R.id.filmsListLayout),
-                            getString(R.string.loadPageFailedText) + ". " + error.message,
-                            Snackbar.LENGTH_INDEFINITE
-                        )
+                        view.findViewById(R.id.filmsListLayout),
+                        getString(R.string.loadPageFailedText) + ". " + error.message,
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                         .setAction(getString(R.string.tryAgainAction)) {
                             isLoading = true
                             showRecyclerLoader()
-                            viewModel!!.loadPage()
+                            filmsViewModel!!.loadPage()
                         }
                         .setActionTextColor(
                             ContextCompat.getColor(
@@ -74,13 +64,13 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
                         )
                         .show()
                 }
-                viewModel!!.clearError()
+                filmsViewModel!!.clearError()
             }
         })
-        if (viewModel!!.films.value.isNullOrEmpty()) {
+        if (filmsViewModel!!.films.value.isNullOrEmpty()) {
             isLoading = true
             showRecyclerLoader()
-            viewModel!!.loadPage()
+            filmsViewModel!!.loadPage()
         }
 
         reloadButton.setOnClickListener {
@@ -104,7 +94,7 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
                     isLoading = true
                     showRecyclerLoader()
                     loadFailedWrapper.visibility = View.GONE
-                    viewModel!!.loadNextPage()
+                    filmsViewModel!!.loadNextPage()
                 }
             }
         })
@@ -120,7 +110,7 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
         isLoading = true
         adapter!!.clearItems()
         showRecyclerLoader()
-        viewModel!!.reloadAll()
+        filmsViewModel!!.reloadAll()
     }
 
     private fun initInviteButton() {
@@ -145,7 +135,7 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
     override fun onDetailsClick(filmItem: FilmDataModel, position: Int) {
         // todo: передавать id и дергать фильм из room
         val bundle = bundleOf(FILM_ITEM to filmItem)
-        viewModel!!.addVisited(filmItem.id)
+        filmsViewModel!!.addVisited(filmItem.id)
         findNavController().navigate(R.id.action_filmsListFragment_to_filmDetailFragment, bundle)
     }
 
@@ -153,7 +143,7 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
         filmItem: FilmDataModel,
         position: Int
     ) {
-        if (FavouritesRepository.isInFavourites(filmItem.id)) {
+        if (favouritesViewModel!!.isInFavourites(filmItem.id)) {
             removeFromFavourites(filmItem, position, FilmViewAdapter.TYPE_LIST)
         } else {
             addToFavourites(filmItem, position)

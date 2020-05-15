@@ -10,5 +10,5 @@ data class GetFilmsDataModel(
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("results")
-    val results: MutableList<FilmDataModel?>
+    val results: MutableList<FilmDataModel>
 )

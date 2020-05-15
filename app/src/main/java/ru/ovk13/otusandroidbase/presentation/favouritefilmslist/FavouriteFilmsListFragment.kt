@@ -18,7 +18,7 @@ class FavouriteFilmsListFragment : BaseFilmsListFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         favouritesViewModel!!.films.observe(this.viewLifecycleOwner, Observer { films ->
-            adapter!!.setItems(films) {}
+            adapter!!.setItems(films.toMutableList()) {}
         })
     }
 

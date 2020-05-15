@@ -1,28 +1,60 @@
 package ru.ovk13.otusandroidbase.presentation.filmslist
 
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
-import ru.ovk13.otusandroidbase.data.model.GetFilmsDataModel
 import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
-import ru.ovk13.otusandroidbase.domain.usecase.GetFilmsListUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.FilmsUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.VisitedUseCase
 import ru.ovk13.otusandroidbase.presentation.base.BaseFilmsListViewModel
 
 class FilmsListViewModel(
-    private val getFilmsListUseCase: GetFilmsListUseCase
-) : BaseFilmsListViewModel() {
+    private val filmsUseCase: FilmsUseCase,
+    private val favouritesUseCase: FavouritesUseCase,
+    private val visitedUseCase: VisitedUseCase
+) : BaseFilmsListViewModel(favouritesUseCase, visitedUseCase) {
     private var page = 1
-    private var totalPages: Int = 0
+    private var totalPagesCount: Int? = null
 
 
     fun loadPage(reload: Boolean = false) {
-        getFilmsListUseCase.getFilms(page, object : GetFilmsListUseCase.LoadDataCallback {
-            override fun onSuccess(data: GetFilmsDataModel) {
-                totalPages = data.totalPages
-                errorLiveData.postValue(null)
+        filmsUseCase.getFilms(page, object : FilmsUseCase.LoadDataCallback {
 
-                if (reload)
-                    setFilms(data.results)
-                else
-                    addFilms(data.results)
+            override fun onSuccess(data: List<FilmDataModel>) {
+                errorLiveData.postValue(null)
+                val filmsList = data.toMutableList()
+                favouritesUseCase.getFavouritesIds(object :
+                    FavouritesUseCase.GetFavouritesIdsCallback {
+                    override fun onSuccess(favouritesIds: List<Int>) {
+                        visitedUseCase.getVisitedIds(object : VisitedUseCase.GetVisitedCallback {
+                            override fun onSuccess(visitedIds: List<Int>) {
+                                filmsList.map {
+                                    it.inFavourites = favouritesIds.contains(it.id)
+                                    it.visited = visitedIds.contains(it.id)
+                                }
+
+                                if (reload)
+                                    setFilms(filmsList)
+                                else
+                                    addFilms(filmsList)
+                            }
+
+                            override fun onError(e: Throwable) {
+                                setError(e, page)
+                            }
+                        })
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        setError(e)
+                    }
+
+                })
+
+            }
+
+            override fun setTotalPages(count: Int) {
+                totalPagesCount = count
             }
 
             override fun onError(error: String) {
@@ -35,24 +67,17 @@ class FilmsListViewModel(
             }
 
             override fun onError(e: Throwable) {
-                errorLiveData.postValue(
-                    LoadingErrorModel(
-                        e.message ?: "",
-                        if (page > 1) LoadingErrorModel.LOAD_PAGE else LoadingErrorModel.FULL_RELOAD
-                    )
-                )
+                setError(e, page)
             }
 
         })
     }
 
-    private fun setFilms(filmsList: MutableList<FilmDataModel?>) {
-        setMarkers(filmsList)
+    private fun setFilms(filmsList: MutableList<FilmDataModel>) {
         filmsLiveData.postValue(filmsList)
     }
 
-    private fun addFilms(filmsList: MutableList<FilmDataModel?>) {
-        setMarkers(filmsList)
+    private fun addFilms(filmsList: MutableList<FilmDataModel>) {
         val currentFilmsList = filmsLiveData.value ?: mutableListOf()
         currentFilmsList.addAll(filmsList)
         filmsLiveData.postValue(currentFilmsList)
@@ -60,7 +85,10 @@ class FilmsListViewModel(
 
     fun loadNextPage() {
         val nextPage = page + 1
-        if (nextPage > totalPages) {
+        if (totalPagesCount === null) {
+            totalPagesCount = filmsUseCase.getSavedTotalPagesCount()
+        }
+        if (nextPage > (totalPagesCount as Int)) {
             return
         }
         page = nextPage
@@ -69,7 +97,12 @@ class FilmsListViewModel(
 
     fun reloadAll() {
         page = 1
-        totalPages = 0
         loadPage(true)
+    }
+
+    fun setFavouriteStatus(id: Int, inFavourites: Boolean) {
+        val filmsList = filmsLiveData.value
+        filmsList?.find { it.id == id }?.inFavourites = inFavourites
+        filmsLiveData.postValue(filmsList)
     }
 }

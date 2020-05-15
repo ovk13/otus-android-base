@@ -1,4 +1,4 @@
-package ru.ovk13.otusandroidbase
+package ru.ovk13.otusandroidbase.presentation.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import ru.ovk13.otusandroidbase.R
 
 class SettingsFragment : Fragment() {
 

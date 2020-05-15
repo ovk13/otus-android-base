@@ -34,7 +34,7 @@ class FilmDetailFragment : Fragment() {
 
         val coverView = view.findViewById<ImageView>(R.id.filmCover)
         Glide.with(coverView.context)
-            .load(filmItem.posterPath)
+            .load(filmItem.getAbsolutePosterPath())
             .placeholder(R.drawable.ic_no_photo)
             .into(coverView)
     }
