@@ -120,10 +120,14 @@ class FilmViewAdapter(
             filmItem.title,
             filmItem.getAbsolutePosterPath(),
             filmItem.visited,
-            filmItem.inFavourites
+            filmItem.inFavourites,
+            filmItem.scheduled
         )
-        holder.toggleFavourites.setOnClickListener {
+        holder.toggleFavouritesView.setOnClickListener {
             listener.onToggleFavouritesClick(filmItem, holder.adapterPosition - itemsOffset)
+        }
+        holder.editSchedule.setOnClickListener {
+            listener.onEditScheduleClick(filmItem, holder.adapterPosition - itemsOffset)
         }
         holder.detailsBtn.setOnClickListener {
             listener.onDetailsClick(filmItem, holder.adapterPosition - itemsOffset)
@@ -137,10 +141,15 @@ class FilmViewAdapter(
         holder.bind(
             filmItem.title,
             filmItem.getAbsolutePosterPath(),
-            filmItem.visited
+            filmItem.visited,
+            filmItem.inFavourites,
+            filmItem.scheduled
         )
-        holder.removeFromFavourites.setOnClickListener {
+        holder.removeFromFavouritesView.setOnClickListener {
             listener.onRemoveFromFavouritesClick(filmItem, holder.adapterPosition)
+        }
+        holder.editSchedule.setOnClickListener {
+            listener.onEditScheduleClick(filmItem, holder.adapterPosition - itemsOffset)
         }
         holder.detailsBtn.setOnClickListener {
             listener.onDetailsClick(filmItem, holder.adapterPosition - itemsOffset)
@@ -171,6 +180,11 @@ class FilmViewAdapter(
             recyclerView: RecyclerView
         ) {
         }
+
+        fun onEditScheduleClick(
+            filmItem: FilmDataModel,
+            position: Int
+        )
 
         fun onListScroll(
             recyclerView: RecyclerView

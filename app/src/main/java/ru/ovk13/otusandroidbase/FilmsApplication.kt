@@ -1,5 +1,6 @@
 package ru.ovk13.otusandroidbase
 
+import android.app.AlarmManager
 import android.app.Application
 import android.content.Context
 import okhttp3.OkHttpClient
@@ -9,11 +10,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.ovk13.otusandroidbase.data.databse.AppDatabase
 import ru.ovk13.otusandroidbase.data.repository.FavouritesRepositoryImpl
 import ru.ovk13.otusandroidbase.data.repository.FilmsRepositoryImpl
+import ru.ovk13.otusandroidbase.data.repository.ScheduleRepositoryImpl
 import ru.ovk13.otusandroidbase.data.repository.VisitedRepositoryImpl
 import ru.ovk13.otusandroidbase.data.retrofit.service.FilmsRetrofitService
 import ru.ovk13.otusandroidbase.domain.CacheValidator
+import ru.ovk13.otusandroidbase.domain.notification.NotificationScheduler
 import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.FilmsUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.ScheduleUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.VisitedUseCase
 import ru.ovk13.otusandroidbase.network.Api
 import java.util.concurrent.TimeUnit
@@ -24,12 +28,15 @@ class FilmsApplication : Application() {
     lateinit var filmsUseCase: FilmsUseCase
     lateinit var favouritesUseCase: FavouritesUseCase
     lateinit var visitedUseCase: VisitedUseCase
+    lateinit var scheduleUseCase: ScheduleUseCase
+    lateinit var notificationScheduler: NotificationScheduler
 
     override fun onCreate() {
         super.onCreate()
 
         instance = this
         initRetrofit()
+        initNotificationScheduler()
         initUseCases()
     }
 
@@ -60,6 +67,7 @@ class FilmsApplication : Application() {
         val filmsDao = AppDatabase.getDatabase(this).filmsDao
         val favouritesDao = AppDatabase.getDatabase(this).favouritesDao
         val visitedDao = AppDatabase.getDatabase(this).visitedDao
+        val scheduleDao = AppDatabase.getDatabase(this).scheduleDao
         filmsUseCase = FilmsUseCase(
             cacheValidator,
             sharedPreferences,
@@ -67,6 +75,14 @@ class FilmsApplication : Application() {
         )
         favouritesUseCase = FavouritesUseCase(FavouritesRepositoryImpl(favouritesDao))
         visitedUseCase = VisitedUseCase(VisitedRepositoryImpl(visitedDao))
+        scheduleUseCase =
+            ScheduleUseCase(ScheduleRepositoryImpl(scheduleDao), notificationScheduler)
+    }
+
+    private fun initNotificationScheduler() {
+        notificationScheduler =
+            NotificationScheduler(this, getSystemService(Context.ALARM_SERVICE) as AlarmManager)
+        notificationScheduler.createChannel()
     }
 
     companion object {

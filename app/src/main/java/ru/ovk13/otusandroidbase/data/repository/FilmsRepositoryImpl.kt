@@ -30,6 +30,8 @@ class FilmsRepositoryImpl(
         filmsDao.deleteAllFilms()
     }
 
+    override fun getFilmById(id: Int) = filmsDao.getFilm(id)
+
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
     }

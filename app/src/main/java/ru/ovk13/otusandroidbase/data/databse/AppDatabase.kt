@@ -6,12 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.ovk13.otusandroidbase.data.databse.dao.FavouritesDao
 import ru.ovk13.otusandroidbase.data.databse.dao.FilmsDao
+import ru.ovk13.otusandroidbase.data.databse.dao.ScheduleDao
 import ru.ovk13.otusandroidbase.data.databse.dao.VisitedDao
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
+import ru.ovk13.otusandroidbase.data.model.FilmScheduleModel
 import ru.ovk13.otusandroidbase.data.model.VisitedFilmModel
 
 @Database(
-    entities = [FilmDataModel::class, VisitedFilmModel::class],
+    entities = [FilmDataModel::class, VisitedFilmModel::class, FilmScheduleModel::class],
     version = 1,
     exportSchema = false
 )
@@ -19,6 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val filmsDao: FilmsDao
     abstract val favouritesDao: FavouritesDao
     abstract val visitedDao: VisitedDao
+    abstract val scheduleDao: ScheduleDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

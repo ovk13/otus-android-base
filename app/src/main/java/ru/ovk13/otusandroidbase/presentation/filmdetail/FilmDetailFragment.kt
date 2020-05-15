@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_film_detail.*
+import ru.ovk13.otusandroidbase.FilmsApplication
 import ru.ovk13.otusandroidbase.R
-import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 
 
 class FilmDetailFragment : Fragment() {
@@ -26,17 +28,28 @@ class FilmDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val filmItem: FilmDataModel = arguments?.getParcelable(FILM_ITEM)!!
+        val filmDetailViewModel = ViewModelProvider(
+            this,
+            FilmDetailViewModelFactory(
+                FilmsApplication.instance!!.filmsUseCase
+            )
+        ).get(FilmDetailViewModel::class.java)
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = filmItem.title
-        view.findViewById<TextView>(R.id.filmDescription).text = filmItem.overview
+        filmDetailViewModel.detailFilm.observe(this.viewLifecycleOwner, Observer { film ->
+            detailToolbar.title = film.title
+            view.findViewById<TextView>(R.id.filmDescription).text = film.overview
 
-        val coverView = view.findViewById<ImageView>(R.id.filmCover)
-        Glide.with(coverView.context)
-            .load(filmItem.getAbsolutePosterPath())
-            .placeholder(R.drawable.ic_no_photo)
-            .into(coverView)
+            val coverView = view.findViewById<ImageView>(R.id.filmCover)
+            Glide.with(coverView.context)
+                .load(film.getAbsolutePosterPath())
+                .placeholder(R.drawable.ic_no_photo)
+                .into(coverView)
+        })
+
+        val id = arguments?.getInt(ID, 0)
+        if (id != null) {
+            filmDetailViewModel.getFilm(id)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -46,19 +59,7 @@ class FilmDetailFragment : Fragment() {
     }
 
     companion object {
-        const val TAG = "FilmsDetailFragment"
+        const val ID = "id"
         const val FILM_ITEM = "FilmItem"
-
-        fun newInstance(filmItem: FilmDataModel): FilmDetailFragment {
-            val fragment =
-                FilmDetailFragment()
-
-            val bundle = Bundle()
-            bundle.putParcelable(FILM_ITEM, filmItem)
-
-            fragment.arguments = bundle
-
-            return fragment
-        }
     }
 }

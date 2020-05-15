@@ -4,14 +4,16 @@ import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
 import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.FilmsUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.ScheduleUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.VisitedUseCase
 import ru.ovk13.otusandroidbase.presentation.base.BaseFilmsListViewModel
 
 class FilmsListViewModel(
     private val filmsUseCase: FilmsUseCase,
     private val favouritesUseCase: FavouritesUseCase,
-    private val visitedUseCase: VisitedUseCase
-) : BaseFilmsListViewModel(favouritesUseCase, visitedUseCase) {
+    private val visitedUseCase: VisitedUseCase,
+    private val scheduleUseCase: ScheduleUseCase
+) : BaseFilmsListViewModel(favouritesUseCase, visitedUseCase, scheduleUseCase) {
     private var page = 1
     private var totalPagesCount: Int? = null
 
@@ -27,15 +29,26 @@ class FilmsListViewModel(
                     override fun onSuccess(favouritesIds: List<Int>) {
                         visitedUseCase.getVisitedIds(object : VisitedUseCase.GetVisitedCallback {
                             override fun onSuccess(visitedIds: List<Int>) {
-                                filmsList.map {
-                                    it.inFavourites = favouritesIds.contains(it.id)
-                                    it.visited = visitedIds.contains(it.id)
-                                }
+                                scheduleUseCase.getFutureScheduledFilmsIds(object :
+                                    ScheduleUseCase.GetScheduledFilmsIdsCallback {
+                                    override fun onSuccess(scheduledFilmsIds: List<Int>) {
+                                        filmsList.map {
+                                            it.inFavourites = favouritesIds.contains(it.id)
+                                            it.visited = visitedIds.contains(it.id)
+                                            it.scheduled = scheduledFilmsIds.contains(it.id)
+                                        }
 
-                                if (reload)
-                                    setFilms(filmsList)
-                                else
-                                    addFilms(filmsList)
+                                        if (reload)
+                                            setFilms(filmsList)
+                                        else
+                                            addFilms(filmsList)
+                                    }
+
+                                    override fun onError(e: Throwable) {
+                                        setError(e, page)
+                                    }
+
+                                })
                             }
 
                             override fun onError(e: Throwable) {

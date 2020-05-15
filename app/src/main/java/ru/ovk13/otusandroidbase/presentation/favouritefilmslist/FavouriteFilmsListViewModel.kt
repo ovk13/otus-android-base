@@ -4,13 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
 import ru.ovk13.otusandroidbase.domain.usecase.FavouritesUseCase
+import ru.ovk13.otusandroidbase.domain.usecase.ScheduleUseCase
 import ru.ovk13.otusandroidbase.domain.usecase.VisitedUseCase
 import ru.ovk13.otusandroidbase.presentation.base.BaseFilmsListViewModel
 
 class FavouriteFilmsListViewModel(
     private val favouritesUseCase: FavouritesUseCase,
-    private val visitedUseCase: VisitedUseCase
-) : BaseFilmsListViewModel(favouritesUseCase, visitedUseCase) {
+    private val visitedUseCase: VisitedUseCase,
+    private val scheduleUseCase: ScheduleUseCase
+) : BaseFilmsListViewModel(favouritesUseCase, visitedUseCase, scheduleUseCase) {
 
     fun loadFavourites() {
         favouritesUseCase.getFavourites(object : FavouritesUseCase.GetFavouritesCallback {

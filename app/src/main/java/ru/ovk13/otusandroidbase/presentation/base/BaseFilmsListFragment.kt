@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +23,10 @@ import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModel
 import ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListViewModelFactory
+import ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment
 import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModel
 import ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListViewModelFactory
+import ru.ovk13.otusandroidbase.presentation.scheduleEditor.ScheduleEditorFragment
 import ru.ovk13.otusandroidbase.presentation.ui.adapters.FilmViewAdapter
 import ru.ovk13.otusandroidbase.presentation.ui.decorations.LineItemDecoration
 
@@ -48,7 +53,8 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
             FilmsListViewModelFactory(
                 FilmsApplication.instance!!.filmsUseCase,
                 FilmsApplication.instance!!.favouritesUseCase,
-                FilmsApplication.instance!!.visitedUseCase
+                FilmsApplication.instance!!.visitedUseCase,
+                FilmsApplication.instance!!.scheduleUseCase
             )
         ).get(
             FilmsListViewModel::class.java
@@ -59,7 +65,8 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
                 activity!!,
                 FavouriteFilmsListViewModelFactory(
                     FilmsApplication.instance!!.favouritesUseCase,
-                    FilmsApplication.instance!!.visitedUseCase
+                    FilmsApplication.instance!!.visitedUseCase,
+                    FilmsApplication.instance!!.scheduleUseCase
                 )
             ).get(
                 FavouriteFilmsListViewModel::class.java
@@ -192,6 +199,25 @@ abstract class BaseFilmsListFragment : Fragment(), FilmViewAdapter.FilmListListe
                 )
             )
             .show()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        (activity as AppCompatActivity).supportActionBar?.show()
+
+        super.onActivityCreated(savedInstanceState)
+    }
+
+    override fun onEditScheduleClick(filmItem: FilmDataModel, position: Int) {
+        val id = filmItem.id
+        val bundle = bundleOf(ScheduleEditorFragment.ID to id)
+        findNavController().navigate(R.id.action_open_scheduleEditorFragment, bundle)
+    }
+
+    override fun onDetailsClick(filmItem: FilmDataModel, position: Int) {
+        // todo: передавать id и дергать фильм из room
+        val bundle = bundleOf(FilmDetailFragment.ID to filmItem.id)
+        filmsViewModel!!.addVisited(filmItem.id)
+        findNavController().navigate(R.id.action_open_filmDetailFragment, bundle)
     }
 
     companion object {

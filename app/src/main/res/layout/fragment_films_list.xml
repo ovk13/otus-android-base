@@ -58,4 +58,5 @@
                 android:src="@drawable/ic_person_add"
                 android:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

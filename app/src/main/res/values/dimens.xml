@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="standardPadding">10dp</dimen>
+    <dimen name="doubleStandardPadding">20dp</dimen>
     <dimen name="inviteButtonDiameter">60dp</dimen>
     <dimen name="fabMargin">15dp</dimen>
     <dimen name="filmsLinePadding">15dp</dimen>
