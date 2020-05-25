@@ -37,4 +37,5 @@
     <string name="scheduleNotificationTitle">Scheduled view:</string>
     <string name="scheduleNotificationText">You have planned to watch the movie</string>
     <string name="appTitle">Movies catalogue</string>
+    <string name="default_notification_channel_id" translatable="false">DEFAULT_CHANNEL</string>
 </resources>

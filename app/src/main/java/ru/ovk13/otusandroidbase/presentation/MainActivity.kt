@@ -21,8 +21,10 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavigation()
 
-        if (intent.hasExtra(OPEN_FILM_DETAIL) && intent.getBooleanExtra(OPEN_FILM_DETAIL, false)) {
-            val filmId = intent.getIntExtra(FilmDetailFragment.ID, 0)
+        if (intent.hasExtra(OPEN_FILM_DETAIL) && (intent.getStringExtra(OPEN_FILM_DETAIL)?.toInt()
+                ?: 0) == 1
+        ) {
+            val filmId = intent.getStringExtra(FilmDetailFragment.ID)?.toInt() ?: 0
             if (filmId > 0) {
                 val bundle = bundleOf(FilmDetailFragment.ID to filmId)
                 navHostFragment.findNavController()

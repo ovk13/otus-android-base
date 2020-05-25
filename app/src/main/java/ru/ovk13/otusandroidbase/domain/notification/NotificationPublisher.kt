@@ -21,8 +21,8 @@ class NotificationPublisher : BroadcastReceiver() {
         val filmId = intent.getIntExtra(FILM_ID, 0)
         if (filmId > 0) {
             val actionIntent = Intent(context, MainActivity::class.java)
-            actionIntent.putExtra(FilmDetailFragment.ID, filmId)
-                .putExtra(MainActivity.OPEN_FILM_DETAIL, true)
+            actionIntent.putExtra(FilmDetailFragment.ID, filmId.toString())
+                .putExtra(MainActivity.OPEN_FILM_DETAIL, "1")
             val pendingIntent = PendingIntent.getActivity(
                 context,
                 0,

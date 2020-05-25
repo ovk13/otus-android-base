@@ -10,7 +10,6 @@
     </style>
 
     <style name="Toolbar" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="android:titleTextColor">@color/white</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
