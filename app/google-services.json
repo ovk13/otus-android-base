@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "880139222837",
+    "firebase_url": "https://otusandroidbase.firebaseio.com",
+    "project_id": "otusandroidbase",
+    "storage_bucket": "otusandroidbase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880139222837:android:d22b8af64496952cd5167c",
+        "android_client_info": {
+          "package_name": "ru.ovk13.otusandroidbase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "880139222837-p0u8e5oipe8150m870r40v6s83t002a8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPiWuqgFIciix6U-GlNn_gNr0kIpT-yrY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "880139222837-p0u8e5oipe8150m870r40v6s83t002a8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

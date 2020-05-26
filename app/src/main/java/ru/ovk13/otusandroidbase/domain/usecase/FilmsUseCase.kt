@@ -86,20 +86,18 @@ class FilmsUseCase(
     }
 
     private fun saveFilmsToDb(filmsList: List<FilmDataModel>) {
-        val insertRunnable = Runnable {
+        Executors.newSingleThreadExecutor().execute(Runnable {
             filmsList.forEach {
                 it.type = TYPE_FILM
             }
             filmsRepository.writeFilmsListToDb(filmsList)
-        }
-        Executors.newSingleThreadExecutor().execute(insertRunnable)
+        })
     }
 
     fun clearDb() {
-        val deleteRunnable = Runnable {
+        Executors.newSingleThreadExecutor().execute(Runnable {
             filmsRepository.clearDb()
-        }
-        Executors.newSingleThreadExecutor().execute(deleteRunnable)
+        })
     }
 
     fun saveTotalPagesCount(count: Int) {
@@ -110,6 +108,22 @@ class FilmsUseCase(
 
     fun getSavedTotalPagesCount(): Int {
         return sharedPreferences.getInt(SHARED_PREFERENCES_TOTAL_PAGES_COUNT, 0)
+    }
+
+    fun getFilm(id: Int, callback: GetFilmCallback) {
+        Executors.newSingleThreadExecutor().execute(Runnable {
+            try {
+                val film = filmsRepository.getFilmById(id)
+                callback.onSuccess(film)
+            } catch (e: Throwable) {
+                callback.onError(e)
+            }
+        })
+    }
+
+    interface GetFilmCallback {
+        fun onSuccess(film: FilmDataModel)
+        fun onError(e: Throwable)
     }
 
     interface LoadDataCallback {

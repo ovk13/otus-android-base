@@ -1,9 +1,6 @@
 package ru.ovk13.otusandroidbase.data.databse.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
+import androidx.room.*
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 
 @Dao
@@ -16,4 +13,7 @@ interface BaseFilmsDao {
 
     @Delete
     fun delete(film: FilmDataModel)
+
+    @Query("SELECT * FROM films WHERE id=:id LIMIT 1")
+    fun getFilm(id: Int): FilmDataModel
 }

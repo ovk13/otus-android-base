@@ -8,11 +8,26 @@
             android:name="ru.ovk13.otusandroidbase.presentation.favouritefilmslist.FavouriteFilmsListFragment"
             android:label="FavouriteFilmsListFragment">
         <action
-                android:id="@+id/action_favouriteFilmsListFragment_to_filmDetailFragment2"
-                app:destination="@id/filmDetailFragment2" />
+                android:id="@+id/action_open_filmDetailFragment"
+                app:destination="@id/filmDetailFragment" />
+        <action
+                android:id="@+id/action_open_scheduleEditorFragment"
+                app:destination="@id/scheduleEditorFragment" />
     </fragment>
     <fragment
-            android:id="@+id/filmDetailFragment2"
+            android:id="@+id/filmDetailFragment"
             android:name="ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment"
-            android:label="FilmDetailFragment" />
+            android:label="FilmDetailFragment">
+        <argument
+                android:name="id"
+                app:argType="integer" />
+    </fragment>
+    <fragment
+            android:id="@+id/scheduleEditorFragment"
+            android:name="ru.ovk13.otusandroidbase.presentation.scheduleEditor.ScheduleEditorFragment"
+            android:label="ScheduleEditorFragment">
+        <argument
+                android:name="id"
+                app:argType="integer" />
+    </fragment>
 </navigation>

@@ -9,8 +9,11 @@
             android:name="ru.ovk13.otusandroidbase.presentation.filmslist.FilmsListFragment"
             android:label="FilmsListFragment">
         <action
-                android:id="@+id/action_filmsListFragment_to_filmDetailFragment"
+                android:id="@+id/action_open_filmDetailFragment"
                 app:destination="@id/filmDetailFragment" />
+        <action
+                android:id="@+id/action_open_scheduleEditorFragment"
+                app:destination="@id/scheduleEditorFragment" />
     </fragment>
     <fragment
             android:id="@+id/filmDetailFragment"
@@ -20,4 +23,15 @@
                 android:name="id"
                 app:argType="integer" />
     </fragment>
+    <fragment
+            android:id="@+id/scheduleEditorFragment"
+            android:name="ru.ovk13.otusandroidbase.presentation.scheduleEditor.ScheduleEditorFragment"
+            android:label="ScheduleEditorFragment">
+        <argument
+                android:name="id"
+                app:argType="integer" />
+    </fragment>
+    <action
+            android:id="@+id/action_global_filmDetailFragment"
+            app:destination="@id/filmDetailFragment" />
 </navigation>

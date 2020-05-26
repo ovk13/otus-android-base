@@ -7,9 +7,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -19,7 +17,6 @@ import ru.ovk13.otusandroidbase.R
 import ru.ovk13.otusandroidbase.data.model.FilmDataModel
 import ru.ovk13.otusandroidbase.data.model.LoadingErrorModel
 import ru.ovk13.otusandroidbase.presentation.base.BaseFilmsListFragment
-import ru.ovk13.otusandroidbase.presentation.filmdetail.FilmDetailFragment.Companion.FILM_ITEM
 import ru.ovk13.otusandroidbase.presentation.ui.adapters.FilmViewAdapter
 
 class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListener {
@@ -130,13 +127,6 @@ class FilmsListFragment : BaseFilmsListFragment(), FilmViewAdapter.FilmListListe
                 startActivity(inviteChooser)
             }
         }
-    }
-
-    override fun onDetailsClick(filmItem: FilmDataModel, position: Int) {
-        // todo: передавать id и дергать фильм из room
-        val bundle = bundleOf(FILM_ITEM to filmItem)
-        filmsViewModel!!.addVisited(filmItem.id)
-        findNavController().navigate(R.id.action_filmsListFragment_to_filmDetailFragment, bundle)
     }
 
     override fun onToggleFavouritesClick(

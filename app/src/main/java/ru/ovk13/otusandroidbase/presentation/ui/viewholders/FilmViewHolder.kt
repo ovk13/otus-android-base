@@ -1,49 +1,30 @@
 package ru.ovk13.otusandroidbase.presentation.ui.viewholders
 
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import ru.ovk13.otusandroidbase.R
 
-class FilmViewHolder(itemView: View) :
-    RecyclerView.ViewHolder(itemView) {
-    private val coverView: AppCompatImageView = itemView.findViewById(R.id.cover)
-    private val titleView: TextView = itemView.findViewById(R.id.title)
-    val toggleFavourites: ImageView = itemView.findViewById(R.id.toggleFavourites)
-    private val removeFromFavourites: ImageView = itemView.findViewById(R.id.removeFromFavourites)
-    val detailsBtn: Button = itemView.findViewById(R.id.detailsBtn)
+class FilmViewHolder(itemView: View) : BaseFilmViewHolder(itemView) {
 
-    fun bind(
+    override fun bind(
         title: String,
         posterPath: String?,
         visited: Boolean,
-        inFavourites: Boolean
+        inFavourites: Boolean,
+        scheduled: Boolean
     ) {
-        toggleFavourites.visibility = View.VISIBLE
-        removeFromFavourites.visibility = View.GONE
+        super.bind(title, posterPath, visited, inFavourites, scheduled)
 
-        titleView.text = title
-        titleView.setTextColor(
-            ContextCompat.getColor(
-                itemView.context,
-                if (visited) R.color.visited else R.color.title
-            )
-        )
+        toggleFavouritesView.visibility = View.VISIBLE
+        removeFromFavouritesView.visibility = View.GONE
 
         if (inFavourites) {
-            toggleFavourites.alpha = 1f
+            toggleFavouritesView.alpha = ON_ICON_ALPHA
         } else {
-            toggleFavourites.alpha = 0.3f
+            toggleFavouritesView.alpha = OFF_ICON_ALPHA
         }
+    }
 
-        Glide.with(coverView.context)
-            .load(posterPath)
-            .placeholder(R.drawable.ic_no_photo)
-            .into(coverView)
+    companion object {
+        const val ON_ICON_ALPHA = 1f
+        const val OFF_ICON_ALPHA = 0.4f
     }
 }
